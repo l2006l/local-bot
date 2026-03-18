@@ -1,8 +1,6 @@
 spring:
   application:
     name: local-bot
-  config:
-    import: classpath:application.yml
 
 server:
   port: 8080
