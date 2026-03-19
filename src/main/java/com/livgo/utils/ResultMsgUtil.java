@@ -52,7 +52,7 @@ public class ResultMsgUtil {
                 .text(msg)
                 .text("-----------\n")
                 .text("📊 库中共计 " + all + " 个文件\n")
-                .text(" 共" + resSize + "个结果， 当前页数 " + pageNum + "/" + totalPage + "\n")
+                .text(" 共" + resSize + "个结果， 当前页数 " + (pageNum + 1) + "/" + totalPage + "\n")
                 .text("-----------\n")
                 .text("💡 下载指令：下载 [序号]\n")
                 .text("📃 翻页指令：上一页 / 下一页\n")

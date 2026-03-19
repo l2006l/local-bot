@@ -110,7 +110,7 @@ public class BaseFunction {
         // 分页
         List<File> page = ListUtil.page(0, pageSize, levels);
 
-        Integer pageNum = 1;
+        Integer pageNum = 0;
 
         String resMsg = ResultMsgUtil.fileListMsg(page);
 
@@ -149,7 +149,7 @@ public class BaseFunction {
 
         Integer pageNum = PAGE_CACHE.get(event.getUserId());
 
-        if (pageNum - 1 <= 0) {
+        if (pageNum - 1 < 0) {
             log.info("用户 {} 已是第一页", event.getUserId());
             MsgUtils msg = MsgUtils.builder()
                     .text("已经是第一页了\n")
