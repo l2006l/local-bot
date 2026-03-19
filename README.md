@@ -12,6 +12,32 @@
 ### 7.由于只是我自己使用，所以并没有添加数据库，如果有需要的可以自行添加
 ### 8.本人只是一个代码萌新，如果有写的不好的请多包涵，我已经尽力了
 
+## 配置文件
+application.yml
+```yaml
+spring:
+  application:
+    name: local-bot
+
+server:
+  port: 8080
+shiro:
+  ws:
+    server:
+      url: /ws/shiro
+      enable: true
+
+run:
+  mode: simple                # simple / standard   运行模式
+  location: your/work/dir     # 工作目录，即jar包所在路径
+  pwd: password               # 全部同步用到的的密码
+  admin: [123456,123345]      # 管理员qq号，部分场景下用到
+  groupList: [123345,123435]  # 白名单群号，即：启用功能的群聊，为空则默认全部群聊
+  autoGroup: 1234567          # 自动监听群聊，有文件自动上传
+  pageSize: 10                # 搜索结果分页大小
+
+```
+
 ## 所有指令
 | 指令名称 | 操作范围  |       模式        |       参数       |   指令格式    |
 |:----:|:-----:|:---------------:|:--------------:|:---------:|
