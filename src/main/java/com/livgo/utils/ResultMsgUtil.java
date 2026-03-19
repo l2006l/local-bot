@@ -66,8 +66,6 @@ public class ResultMsgUtil {
 
         AtomicInteger i = new AtomicInteger(1);
 
-        Integer pageNum = 1;
-
         files.forEach(f -> {
             resMsg.append(i)
                     .append(".")

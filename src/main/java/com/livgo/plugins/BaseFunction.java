@@ -64,7 +64,8 @@ public class BaseFunction {
         if (keyword.isEmpty()) {
             MsgUtils msg = MsgUtils.builder()
                     .reply(event.getMessageId())
-                    .text("请输入搜索关键字\n");
+                    .text("请输入搜索关键字\n")
+                    .text("---------------\n");
 
             String errMsg = ResultMsgUtil.msgWithNotice(msg);
 
@@ -87,7 +88,8 @@ public class BaseFunction {
         if (levels.isEmpty()) {
             MsgUtils msg = MsgUtils.builder()
                     .reply(event.getMessageId())
-                    .text("没有搜到相关内容");
+                    .text("没有搜到相关内容\n")
+                    .text("---------------\n");
 
             String errMsg = ResultMsgUtil.msgWithNotice(msg);
 
@@ -114,7 +116,7 @@ public class BaseFunction {
 
         CACHE.put(event.getUserId(), levels);
 
-        PAGE_CACHE.put(event.getUserId(), 0);
+        PAGE_CACHE.put(event.getUserId(), pageNum);
 
         // 构建消息
         String resultMsg = ResultMsgUtil.pageMsg(event.getMessageId(),
@@ -147,10 +149,11 @@ public class BaseFunction {
 
         Integer pageNum = PAGE_CACHE.get(event.getUserId());
 
-        if (pageNum - 1 < 0) {
+        if (pageNum - 1 <= 0) {
             log.info("用户 {} 已是第一页", event.getUserId());
             MsgUtils msg = MsgUtils.builder()
-                    .text("已经是第一页了");
+                    .text("已经是第一页了\n")
+                    .text("---------------\n");
             String resMsg = ResultMsgUtil.msgWithNotice(msg);
             bot.sendGroupMsg(event.getGroupId(), resMsg, false);
             return;
@@ -198,7 +201,8 @@ public class BaseFunction {
         if (pageNum + 1 >= totalPage) {
             log.info("用户 {} 已是最后一页", event.getUserId());
             MsgUtils msg = MsgUtils.builder()
-                    .text("已是最后一页了");
+                    .text("已是最后一页了\n")
+                    .text("---------------\n");
             String resMsg = ResultMsgUtil.msgWithNotice(msg);
             bot.sendGroupMsg(event.getGroupId(), resMsg, false);
         }
@@ -268,7 +272,8 @@ public class BaseFunction {
         if (rowIndex < 0 || rowIndex > page.size()) {
             MsgUtils msg = MsgUtils.builder()
                     .reply(event.getMessageId())
-                    .text("请输入正确的序号\n");
+                    .text("请输入正确的序号\n")
+                    .text("---------------\n");
 
             String errMsg = ResultMsgUtil.msgWithNotice(msg);
 
