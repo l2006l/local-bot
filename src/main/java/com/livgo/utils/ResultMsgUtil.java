@@ -82,4 +82,9 @@ public class ResultMsgUtil {
         return resMsg.toString();
     }
 
+    public static String msgWithNotice(MsgUtils msg) {
+        return msg.text(notice())
+                .build();
+    }
+
 }

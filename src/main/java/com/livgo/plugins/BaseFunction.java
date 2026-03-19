@@ -62,10 +62,11 @@ public class BaseFunction {
 
         // 判断搜索词是否为空
         if (keyword.isEmpty()) {
-            String errMsg = MsgUtils.builder()
+            MsgUtils msg = MsgUtils.builder()
                     .reply(event.getMessageId())
-                    .text("请输入搜索关键字\n")
-                    .build();
+                    .text("请输入搜索关键字\n");
+
+            String errMsg = ResultMsgUtil.msgWithNotice(msg);
 
             bot.sendGroupMsg(event.getGroupId(), errMsg, false);
 
@@ -84,10 +85,11 @@ public class BaseFunction {
 
         // 判断搜索结果是否为空
         if (levels.isEmpty()) {
-            String errMsg = MsgUtils.builder()
+            MsgUtils msg = MsgUtils.builder()
                     .reply(event.getMessageId())
-                    .text("没有搜到相关内容")
-                    .build();
+                    .text("没有搜到相关内容");
+
+            String errMsg = ResultMsgUtil.msgWithNotice(msg);
 
             bot.sendGroupMsg(event.getGroupId(), errMsg, false);
 
@@ -147,7 +149,10 @@ public class BaseFunction {
 
         if (pageNum - 1 < 0) {
             log.info("用户 {} 已是第一页", event.getUserId());
-            bot.sendGroupMsg(event.getGroupId(), "已是第一页了", false);
+            MsgUtils msg = MsgUtils.builder()
+                    .text("已经是第一页了");
+            String resMsg = ResultMsgUtil.msgWithNotice(msg);
+            bot.sendGroupMsg(event.getGroupId(), resMsg, false);
             return;
         }
 
@@ -192,7 +197,10 @@ public class BaseFunction {
 
         if (pageNum + 1 >= totalPage) {
             log.info("用户 {} 已是最后一页", event.getUserId());
-            bot.sendGroupMsg(event.getGroupId(), "已是最后一页了", false);
+            MsgUtils msg = MsgUtils.builder()
+                    .text("已是最后一页了");
+            String resMsg = ResultMsgUtil.msgWithNotice(msg);
+            bot.sendGroupMsg(event.getGroupId(), resMsg, false);
         }
 
         PAGE_CACHE.put(event.getUserId(), pageNum + 1);
@@ -258,10 +266,11 @@ public class BaseFunction {
         List<File> page = ListUtil.page(PAGE_CACHE.get(event.getUserId()), pageSize, levels);
 
         if (rowIndex < 0 || rowIndex > page.size()) {
-            String errMsg = MsgUtils.builder()
+            MsgUtils msg = MsgUtils.builder()
                     .reply(event.getMessageId())
-                    .text("请输入正确的序号\n")
-                    .build();
+                    .text("请输入正确的序号\n");
+
+            String errMsg = ResultMsgUtil.msgWithNotice(msg);
 
             bot.sendGroupMsg(event.getGroupId(), errMsg, false);
 
