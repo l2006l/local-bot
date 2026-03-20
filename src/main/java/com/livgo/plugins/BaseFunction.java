@@ -34,6 +34,8 @@ public class BaseFunction {
     @Value("${run.pageSize}")
     private Integer pageSize;
 
+    private static final Integer PAGE_NUM = 0;
+
     private static final String LEVELS = "levels";
 
     private static final TimedCache<Long, List<File>> CACHE = new TimedCache<>(1000 * 60 * 10);
@@ -108,15 +110,13 @@ public class BaseFunction {
         int totalPage = PageUtil.totalPage(levels.size(), pageSize);
 
         // 分页
-        List<File> page = ListUtil.page(0, pageSize, levels);
-
-        Integer pageNum = 0;
+        List<File> page = ListUtil.page(PAGE_NUM, pageSize, levels);
 
         String resMsg = ResultMsgUtil.fileListMsg(page);
 
         CACHE.put(event.getUserId(), levels);
 
-        PAGE_CACHE.put(event.getUserId(), pageNum);
+        PAGE_CACHE.put(event.getUserId(), PAGE_NUM);
 
         // 构建消息
         String resultMsg = ResultMsgUtil.pageMsg(event.getMessageId(),
@@ -124,7 +124,7 @@ public class BaseFunction {
                 all.get(),
                 levels.size(),
                 totalPage,
-                pageNum);
+                PAGE_NUM);
 
         bot.sendGroupMsg(event.getGroupId(), resultMsg, false);
 
@@ -164,7 +164,9 @@ public class BaseFunction {
             all.getAndIncrement();
         });
 
-        PAGE_CACHE.put(event.getUserId(), pageNum - 1);
+        pageNum = pageNum - 1;
+
+        PAGE_CACHE.put(event.getUserId(), pageNum);
 
         int totalPage = PageUtil.totalPage(CACHE.get(event.getUserId()).size(), pageSize);
 
@@ -207,7 +209,9 @@ public class BaseFunction {
             bot.sendGroupMsg(event.getGroupId(), resMsg, false);
         }
 
-        PAGE_CACHE.put(event.getUserId(), pageNum + 1);
+        pageNum = pageNum + 1;
+
+        PAGE_CACHE.put(event.getUserId(), pageNum);
 
         BuildMsgAndSend(bot, event, all, totalPage, pageNum);
 
