@@ -47,7 +47,7 @@ public class ResultMsgUtil {
 
         return MsgUtils.builder()
                 .reply(messageId)
-                .text("🗂️ 搜索结果列表（有效时间2分钟）\n")
+                .text("🗂️ 搜索结果列表\n")
                 .text("-----------\n")
                 .text(msg)
                 .text("-----------\n")

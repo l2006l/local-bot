@@ -9,7 +9,6 @@ import com.livgo.utils.PermissionUtil;
 import com.livgo.utils.ResultMsgUtil;
 import com.mikuac.shiro.annotation.GroupMessageHandler;
 import com.mikuac.shiro.annotation.MessageHandlerFilter;
-import com.mikuac.shiro.annotation.PrivateMessageHandler;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.common.utils.MsgUtils;
 import com.mikuac.shiro.core.Bot;
@@ -39,9 +38,9 @@ public class BaseFunction {
 
     private static final String LEVELS = "levels";
 
-    private static final TimedCache<Long, List<File>> CACHE = new TimedCache<>(1000 * 60 * 2);
+    private static final TimedCache<Long, List<File>> CACHE = new TimedCache<>(1000 * 60 * 10);
 
-    private static final TimedCache<Long, Integer> PAGE_CACHE = new TimedCache<>(1000 * 60 * 2);
+    private static final TimedCache<Long, Integer> PAGE_CACHE = new TimedCache<>(1000 * 60 * 10);
 
     /**
      * 搜索文件
@@ -167,9 +166,6 @@ public class BaseFunction {
 
         pageNum = pageNum - 1;
 
-        List<File> files = CACHE.get(event.getUserId());
-        CACHE.remove(event.getUserId());
-        CACHE.put(event.getUserId(), files);
         PAGE_CACHE.put(event.getUserId(), pageNum);
 
         int totalPage = PageUtil.totalPage(CACHE.get(event.getUserId()).size(), pageSize);
@@ -215,9 +211,6 @@ public class BaseFunction {
 
         pageNum = pageNum + 1;
 
-        List<File> files = CACHE.get(event.getUserId());
-        CACHE.remove(event.getUserId());
-        CACHE.put(event.getUserId(), files);
         PAGE_CACHE.put(event.getUserId(), pageNum);
 
         BuildMsgAndSend(bot, event, all, totalPage, pageNum);
@@ -294,58 +287,9 @@ public class BaseFunction {
         }
 
         File level = page.get(rowIndex - 1);
-
+        CACHE.remove(event.getUserId());
+        PAGE_CACHE.remove(event.getUserId());
         bot.uploadGroupFile(event.getGroupId(), level.getAbsolutePath(), level.getName());
-
-    }
-    @GroupMessageHandler
-    @MessageHandlerFilter(cmd = "^删除\s*(\\d+)?$")
-    public void delete(Bot bot, GroupMessageEvent event, Matcher matcher) {
-
-        if (PermissionUtil.isAdmin(event.getUserId())) {
-            return;
-        }
-
-        int rowIndex = Integer.parseInt(matcher.group(1).strip());
-
-        List<File> levels = CACHE.get(event.getUserId());
-
-        if (levels == null) {
-            log.info("用户 {} 未搜索文件", event.getUserId());
-            return;
-        }
-
-        List<File> page = ListUtil.page(PAGE_CACHE.get(event.getUserId()), pageSize, levels);
-
-        if (rowIndex < 0 || rowIndex > page.size()) {
-            MsgUtils msg = MsgUtils.builder()
-                    .reply(event.getMessageId())
-                    .text("请输入正确的序号\n")
-                    .text("---------------\n");
-
-            String errMsg = ResultMsgUtil.msgWithNotice(msg);
-            bot.sendGroupMsg(event.getGroupId(), errMsg, false);
-            return;
-        }
-
-        File level = page.get(rowIndex - 1);
-
-        if (FileUtil.del(level)) {
-            MsgUtils msg = MsgUtils.builder()
-                    .reply(event.getMessageId())
-                    .text("删除文件" + level.getName() + " 成功 \n")
-                    .text("---------------\n");
-            String resMsg = ResultMsgUtil.msgWithNotice(msg);
-            bot.sendGroupMsg(event.getGroupId(), resMsg, false);
-        } else {
-            MsgUtils msg = MsgUtils.builder()
-                    .reply(event.getMessageId())
-                    .text("删除失败，文件可能已删除\n")
-                    .text("---------------\n");
-
-            String errMsg = ResultMsgUtil.msgWithNotice(msg);
-            bot.sendGroupMsg(event.getGroupId(), errMsg, false);
-        }
 
     }
 
