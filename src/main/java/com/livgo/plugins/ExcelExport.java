@@ -3,73 +3,71 @@ package com.livgo.plugins;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.poi.excel.BigExcelWriter;
 import cn.hutool.poi.excel.ExcelUtil;
-import com.livgo.po.FilePo;
+import com.livgo.mapper.FileDetailMapper;
+import com.livgo.po.FileDetail;
 import com.livgo.utils.PermissionUtil;
 import com.mikuac.shiro.annotation.AnyMessageHandler;
 import com.mikuac.shiro.annotation.MessageHandlerFilter;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
-import org.springframework.beans.factory.annotation.Value;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Excel 导出
- *
- * @author livlong
- * @date 2026-03-18
- */
+import static com.livgo.utils.PathUtil.getJarPath;
+
 @Shiro
 @Component
 public class ExcelExport {
 
-    @Value("${run.location}")
-    private String runLocation;
+    @Resource
+    private FileDetailMapper mapper;
 
-    private static final String TEMP_FILE = "tempFile";
+    private static String rootPath = getJarPath();
 
-    private static final String LEVELS = "levels";
+    private static String TEMP_FILE = "tempFile";
 
-    /**
-     *  获取文件列表（导出excel并发送）
-     *
-     * @param bot   机器人
-     * @param event 活动
-     */
     @AnyMessageHandler
     @MessageHandlerFilter(cmd = "文件列表")
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public void list(Bot bot, AnyMessageEvent event) {
-        if (event.getGroupId() != null) {
-            if (PermissionUtil.inGroupList(event.getGroupId())) {
-                return;
-            }
+        if (PermissionUtil.isBlackUser(event.getUserId())) {
+            return;
         }
-        List<FilePo> fpo = new ArrayList<>();
+        List<FileDetail> fdl = new ArrayList<>();
 
-        File excel = FileUtil.file(runLocation, TEMP_FILE, "文件列表.xlsx");
+        File excel = FileUtil.file(rootPath, TEMP_FILE, "文件列表.xlsx");
 
         FileUtil.del(excel);
 
         BigExcelWriter writer = ExcelUtil.getBigWriter(excel);
 
-        writer.addHeaderAlias("name", "文件名");
-        writer.addHeaderAlias("size", "文件大小");
-        writer.addHeaderAlias("path", "文件路径");
         writer.setOnlyAlias(true);
 
-        FileUtil.walkFiles(FileUtil.file(runLocation, LEVELS), f -> {
-            FilePo po = new FilePo();
-            po.setName(f.getName());
-            po.setSize(FileUtil.readableFileSize(f));
-            po.setPath(FileUtil.subPath(runLocation, f));
-            fpo.add(po);
+        writer.addHeaderAlias("fileAliasName", "文件名");
+        writer.addHeaderAlias("originalGroupId", "来源群聊");
+        writer.addHeaderAlias("fileSize", "文件大小");
+        writer.addHeaderAlias("fileMd5", "文件md5");
+        writer.addHeaderAlias("fileUploadTime", "文件上传时间");
+
+        //查询数据
+        mapper.selectList(null, resultContext -> {
+            fdl.add(resultContext.getResultObject());
+            if (fdl.size() >= 500) {
+                writer.write(fdl);
+                fdl.clear();
+            }
         });
 
-        writer.write(fpo);
+        if (!fdl.isEmpty()) {
+            writer.write(fdl);
+        }
+
         writer.close();
 
         if (event.getGroupId() == null) {

@@ -1,13 +1,14 @@
 package com.livgo.utils;
 
-import com.livgo.config.GroupList;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.livgo.constant.PermissionConstant;
+import com.livgo.mapper.PermissionMapper;
+import com.livgo.po.Permission;
 import jakarta.annotation.PostConstruct;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import static com.livgo.constant.PermissionConstant.ADMIN;
 
 /**
  * 权限工具类
@@ -19,40 +20,88 @@ import java.util.List;
 @Slf4j
 public class PermissionUtil {
 
-    @Resource
-    private GroupList groupList;
+    private final PermissionMapper permissionMapper;
 
-    @Value("${run.autoGroup}")
-    private Long auto;
+    private static PermissionMapper mapper;
 
-    private static List<Long> GP_LIST;
-
-    private static Long AUTO_GROUP;
-
-    private static List<Long> ADMIN_LIST;
+    public PermissionUtil(PermissionMapper permissionMapper) {
+        this.permissionMapper = permissionMapper;
+    }
 
     @PostConstruct
     public void init() {
-        PermissionUtil.GP_LIST = groupList.getGroupList();
-        PermissionUtil.ADMIN_LIST = groupList.getAdmin();
-        PermissionUtil.AUTO_GROUP = auto;
+        mapper = permissionMapper;
     }
 
 
-    public static boolean inGroupList(Long groupId) {
-        if (!GP_LIST.isEmpty() && !GP_LIST.contains(groupId)) {
-            log.warn("群 {} 未开放该功能", groupId);
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean isAutoUpload(Long groupId) {
-        return !AUTO_GROUP.equals(groupId);
-    }
-
+    /**
+     * 判断是否是超管 true 超管
+     *
+     * @param userId
+     * @return
+     */
     public static boolean isAdmin(Long userId) {
-        return !ADMIN_LIST.contains(userId);
+        LambdaQueryWrapper<Permission> query = new LambdaQueryWrapper<>();
+        query.eq(Permission::getAccount, userId)
+                .eq(Permission::getIdentity, ADMIN)
+                .eq(Permission::isStatus, true);
+        return mapper.selectCount(query) > 0;
+    }
+
+    /**
+     * 判断群是否在白名单
+     *
+     * @param groupId
+     * @return true 是
+     */
+    public static boolean inGroupList(Long groupId) {
+        LambdaQueryWrapper<Permission> query = new LambdaQueryWrapper<>();
+        query.eq(Permission::getAccount, groupId)
+                .eq(Permission::getIdentity, PermissionConstant.GROUP_WHITE_LIST)
+                .eq(Permission::isStatus, true);
+        return mapper.selectCount(query) > 0;
+    }
+
+    /**
+     * 判断群/用户是否具有自动上传权限
+     *
+     * @param guId
+     * @return true  是
+     */
+    public static boolean isAutoUpload(Long guId) {
+        LambdaQueryWrapper<Permission> query = new LambdaQueryWrapper<>();
+        query.eq(Permission::getAccount, guId)
+                .eq(Permission::getIdentity, PermissionConstant.AUTO_UPDATE_GROUP)
+                .eq(Permission::isStatus, true);
+        return mapper.selectCount(query) > 0;
+    }
+
+    /**
+     * 判断用户是否在白名单
+     *
+     * @param userId
+     * @return true 是
+     */
+    public static boolean isWhiteUser(Long userId) {
+        LambdaQueryWrapper<Permission> query = new LambdaQueryWrapper<>();
+        query.eq(Permission::getAccount, userId)
+                .eq(Permission::getIdentity, PermissionConstant.USER_WHITE_LIST)
+                .eq(Permission::isStatus, true);
+        return mapper.selectCount(query) > 0;
+    }
+
+    /**
+     * 判断用户是否在黑名单
+     *
+     * @param userId
+     * @return
+     */
+    public static boolean isBlackUser(Long userId) {
+        LambdaQueryWrapper<Permission> query = new LambdaQueryWrapper<>();
+        query.eq(Permission::getAccount, userId)
+                .eq(Permission::getIdentity, PermissionConstant.USER_BLACK_LIST)
+                .eq(Permission::isStatus, true);
+        return mapper.selectCount(query) > 0;
     }
 
 }

@@ -1,47 +1,47 @@
 package com.livgo.plugins;
 
 import cn.hutool.cache.impl.TimedCache;
-import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.PageUtil;
-import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.livgo.mapper.FileDetailMapper;
+import com.livgo.po.FileDetail;
 import com.livgo.utils.PermissionUtil;
 import com.livgo.utils.ResultMsgUtil;
 import com.mikuac.shiro.annotation.GroupMessageHandler;
 import com.mikuac.shiro.annotation.MessageHandlerFilter;
-import com.mikuac.shiro.annotation.PrivateMessageHandler;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.common.utils.MsgUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
+
+import static com.livgo.utils.PathUtil.getJarPath;
 
 @Shiro
 @Component
 @Slf4j
-public class BaseFunction {
+public class UserFunction {
 
-    @Value("${run.location}")
-    private String runLocation;
+    private static String rootPath = getJarPath();
 
-    @Value("${run.pageSize}")
+    @Value("${run.pageSize:10}")
     private Integer pageSize;
-
-    private static final Integer PAGE_NUM = 0;
 
     private static final String LEVELS = "levels";
 
-    private static final TimedCache<Long, List<File>> CACHE = new TimedCache<>(1000 * 60 * 2);
+    private static final TimedCache<Long, Page<FileDetail>> CACHE = new TimedCache<>(1000 * 60 * 2);
 
-    private static final TimedCache<Long, Integer> PAGE_CACHE = new TimedCache<>(1000 * 60 * 2);
+    private static final TimedCache<Long, String> KEY_CACHE = new TimedCache<>(1000 * 60 * 2);
+
+    @Resource
+    private FileDetailMapper fileDetailMapper;
 
     /**
      * 搜索文件
@@ -53,42 +53,25 @@ public class BaseFunction {
     @GroupMessageHandler
     @MessageHandlerFilter(cmd = "^搜索\s*(.*)?$")
     public void search(Bot bot, GroupMessageEvent event, Matcher matcher) {
-
         // 判断群是否在群组列表内
-        if (PermissionUtil.inGroupList(event.getGroupId())) {
+        if (!PermissionUtil.inGroupList(event.getGroupId())) {
+            return;
+        }
+
+        if (PermissionUtil.isBlackUser(event.getUserId())) {
             return;
         }
 
         // 获取搜索词
         String keyword = matcher.group(1).strip();
 
-
-        // 判断搜索词是否为空
-        if (keyword.isEmpty()) {
-            MsgUtils msg = MsgUtils.builder()
-                    .reply(event.getMessageId())
-                    .text("请输入搜索关键字\n")
-                    .text("---------------\n");
-
-            String errMsg = ResultMsgUtil.msgWithNotice(msg);
-
-            bot.sendGroupMsg(event.getGroupId(), errMsg, false);
-
-            return;
-        }
-
-        List<File> levels = new ArrayList<>();
-
-        // 遍历本地目录搜索
-        FileUtil.walkFiles(FileUtil.file(runLocation, LEVELS), f -> {
-            if (f.getName().contains(keyword) || StrUtil.containsIgnoreCase(f.getName(), keyword)) {
-                levels.add(f);
-            }
-        });
-
+        Page<FileDetail> pg = new Page<>(1, pageSize);
+        LambdaQueryWrapper<FileDetail> query = new LambdaQueryWrapper<>();
+        query.like(FileDetail::getFileAliasName, keyword);
+        Page<FileDetail> fpl = fileDetailMapper.selectPage(pg, query);
 
         // 判断搜索结果是否为空
-        if (levels.isEmpty()) {
+        if (fpl.getTotal() == 0) {
             MsgUtils msg = MsgUtils.builder()
                     .reply(event.getMessageId())
                     .text("没有搜到相关内容\n")
@@ -102,30 +85,20 @@ public class BaseFunction {
         }
 
         // 统计目录下所有文件数
-        AtomicInteger all = new AtomicInteger(0);
-        FileUtil.walkFiles(FileUtil.file(runLocation, LEVELS), f -> {
-            all.getAndIncrement();
-        });
+        Long all = fileDetailMapper.selectCount(null);
 
-        // 计算总页数
-        int totalPage = PageUtil.totalPage(levels.size(), pageSize);
-
-        // 分页
-        List<File> page = ListUtil.page(PAGE_NUM, pageSize, levels);
-
-        String resMsg = ResultMsgUtil.fileListMsg(page);
-
-        CACHE.put(event.getUserId(), levels);
-
-        PAGE_CACHE.put(event.getUserId(), PAGE_NUM);
+        String resMsg = ResultMsgUtil.fileListMsg(fpl);
 
         // 构建消息
         String resultMsg = ResultMsgUtil.pageMsg(event.getMessageId(),
                 resMsg,
-                all.get(),
-                levels.size(),
-                totalPage,
-                PAGE_NUM);
+                all,
+                fpl.getTotal(),
+                fpl.getPages(),
+                fpl.getCurrent());
+
+        CACHE.put(event.getUserId(), fpl);
+        KEY_CACHE.put(event.getUserId(), keyword);
 
         bot.sendGroupMsg(event.getGroupId(), resultMsg, false);
 
@@ -133,6 +106,7 @@ public class BaseFunction {
 
     /**
      * 上一页
+     *
      * @param bot
      * @param event
      */
@@ -140,7 +114,11 @@ public class BaseFunction {
     @MessageHandlerFilter(cmd = "上一页")
     public void prevPage(Bot bot, GroupMessageEvent event) {
 
-        if (PermissionUtil.inGroupList(event.getGroupId())) {
+        if (!PermissionUtil.inGroupList(event.getGroupId())) {
+            return;
+        }
+
+        if (PermissionUtil.isBlackUser(event.getUserId())) {
             return;
         }
 
@@ -148,9 +126,10 @@ public class BaseFunction {
             return;
         }
 
-        Integer pageNum = PAGE_CACHE.get(event.getUserId());
+        Page<FileDetail> files = CACHE.get(event.getUserId());
+        String keyword = KEY_CACHE.get(event.getUserId());
 
-        if (pageNum - 1 < 0) {
+        if (!files.hasPrevious()) {
             log.info("用户 {} 已是第一页", event.getUserId());
             MsgUtils msg = MsgUtils.builder()
                     .text("已经是第一页了\n")
@@ -160,25 +139,38 @@ public class BaseFunction {
             return;
         }
 
-        AtomicInteger all = new AtomicInteger(0);
-        FileUtil.walkFiles(FileUtil.file(runLocation, LEVELS), f -> {
-            all.getAndIncrement();
-        });
+        Long all = fileDetailMapper.selectCount(null);
 
-        pageNum = pageNum - 1;
+        Page<FileDetail> pg = new Page<>(files.getCurrent() - 1, pageSize);
+        pageQuery(bot, event, keyword, all, pg);
 
-        List<File> files = CACHE.get(event.getUserId());
+    }
+
+    public void pageQuery(Bot bot, GroupMessageEvent event, String keyword, Long all, Page<FileDetail> pg) {
+        LambdaQueryWrapper<FileDetail> query = new LambdaQueryWrapper<>();
+        query.like(FileDetail::getFileAliasName, keyword);
+        Page<FileDetail> fpl = fileDetailMapper.selectPage(pg, query);
+
+        String resMsg = ResultMsgUtil.fileListMsg(fpl);
+
+        String resultMsg = ResultMsgUtil.pageMsg(event.getMessageId(),
+                resMsg,
+                all,
+                fpl.getTotal(),
+                fpl.getPages(),
+                fpl.getCurrent());
+
         CACHE.remove(event.getUserId());
-        CACHE.put(event.getUserId(), files);
-        PAGE_CACHE.put(event.getUserId(), pageNum);
+        CACHE.put(event.getUserId(), fpl);
+        KEY_CACHE.remove(event.getUserId());
+        KEY_CACHE.put(event.getUserId(), keyword);
 
-        int totalPage = PageUtil.totalPage(CACHE.get(event.getUserId()).size(), pageSize);
-
-        BuildMsgAndSend(bot, event, all, totalPage, pageNum);
+        bot.sendGroupMsg(event.getGroupId(), resultMsg, false);
     }
 
     /**
      * 下一页
+     *
      * @param bot
      * @param event
      */
@@ -187,7 +179,11 @@ public class BaseFunction {
     @MessageHandlerFilter(cmd = "下一页")
     public void nextPage(Bot bot, GroupMessageEvent event) {
 
-        if (PermissionUtil.inGroupList(event.getGroupId())) {
+        if (!PermissionUtil.inGroupList(event.getGroupId())) {
+            return;
+        }
+
+        if (PermissionUtil.isBlackUser(event.getUserId())) {
             return;
         }
 
@@ -195,16 +191,11 @@ public class BaseFunction {
             return;
         }
 
-        AtomicInteger all = new AtomicInteger(0);
-        FileUtil.walkFiles(FileUtil.file(runLocation, LEVELS), f -> {
-            all.getAndIncrement();
-        });
+        String keyword = KEY_CACHE.get(event.getUserId());
+        Page<FileDetail> files = CACHE.get(event.getUserId());
+        Long all = fileDetailMapper.selectCount(null);
 
-        int totalPage = PageUtil.totalPage(CACHE.get(event.getUserId()).size(), pageSize);
-
-        Integer pageNum = PAGE_CACHE.get(event.getUserId());
-
-        if (pageNum + 1 >= totalPage) {
+        if (!files.hasNext()) {
             log.info("用户 {} 已是最后一页", event.getUserId());
             MsgUtils msg = MsgUtils.builder()
                     .text("已是最后一页了\n")
@@ -213,45 +204,9 @@ public class BaseFunction {
             bot.sendGroupMsg(event.getGroupId(), resMsg, false);
         }
 
-        pageNum = pageNum + 1;
+        Page<FileDetail> pg = new Page<>(files.getCurrent() + 1, pageSize);
+        pageQuery(bot, event, keyword, all, pg);
 
-        List<File> files = CACHE.get(event.getUserId());
-        CACHE.remove(event.getUserId());
-        CACHE.put(event.getUserId(), files);
-        PAGE_CACHE.put(event.getUserId(), pageNum);
-
-        BuildMsgAndSend(bot, event, all, totalPage, pageNum);
-
-    }
-
-    /**
-     * 构建消息并发送
-     * @param bot
-     * @param event
-     * @param all
-     * @param totalPage
-     * @param pageNum
-     */
-
-    private void BuildMsgAndSend(Bot bot,
-                                 GroupMessageEvent event,
-                                 AtomicInteger all,
-                                 int totalPage,
-                                 Integer pageNum) {
-        List<File> levels = CACHE.get(event.getUserId());
-
-        List<File> page = ListUtil.page(pageNum, pageSize, levels);
-
-        String resMsg = ResultMsgUtil.fileListMsg(page);
-
-        String resultMsg = ResultMsgUtil.pageMsg(event.getMessageId(),
-                resMsg,
-                all.get(),
-                levels.size(),
-                totalPage,
-                pageNum);
-
-        bot.sendGroupMsg(event.getGroupId(), resultMsg, false);
     }
 
     /**
@@ -265,22 +220,24 @@ public class BaseFunction {
     @MessageHandlerFilter(cmd = "^下载\s*(\\d+)$")
     public void download(Bot bot, GroupMessageEvent event, Matcher matcher) {
 
-        if (PermissionUtil.inGroupList(event.getGroupId())) {
+        if (!PermissionUtil.inGroupList(event.getGroupId())) {
             return;
         }
 
-        int rowIndex = Integer.parseInt(matcher.group(1).strip());
+        if (PermissionUtil.isBlackUser(event.getUserId())) {
+            return;
+        }
 
-        List<File> levels = CACHE.get(event.getUserId());
+        int rowIndex = Integer.parseInt(matcher.group(1));
 
-        if (levels == null) {
+        if (!CACHE.containsKey(event.getUserId())) {
             log.info("用户 {} 未搜索文件", event.getUserId());
             return;
         }
 
-        List<File> page = ListUtil.page(PAGE_CACHE.get(event.getUserId()), pageSize, levels);
+        Page<FileDetail> fpl = CACHE.get(event.getUserId());
 
-        if (rowIndex < 0 || rowIndex > page.size()) {
+        if (rowIndex < 0 || rowIndex > fpl.getRecords().size()) {
             MsgUtils msg = MsgUtils.builder()
                     .reply(event.getMessageId())
                     .text("请输入正确的序号\n")
@@ -293,31 +250,36 @@ public class BaseFunction {
             return;
         }
 
-        File level = page.get(rowIndex - 1);
+        FileDetail fdl = fpl.getRecords().get(rowIndex - 1);
 
-        bot.uploadGroupFile(event.getGroupId(), level.getAbsolutePath(), level.getName());
+        File level = FileUtil.file(rootPath, LEVELS, fdl.getFilePath());
+
+        bot.uploadGroupFile(event.getGroupId(), level.getAbsolutePath(), fdl.getOriginalFileName());
 
     }
+
     @GroupMessageHandler
     @MessageHandlerFilter(cmd = "^删除\s*(\\d+)?$")
     public void delete(Bot bot, GroupMessageEvent event, Matcher matcher) {
 
-        if (PermissionUtil.isAdmin(event.getUserId())) {
+        if (!PermissionUtil.isAdmin(event.getUserId()) && !PermissionUtil.isWhiteUser(event.getUserId())) {
+            return;
+        }
+
+        if (PermissionUtil.isBlackUser(event.getUserId())) {
             return;
         }
 
         int rowIndex = Integer.parseInt(matcher.group(1).strip());
 
-        List<File> levels = CACHE.get(event.getUserId());
+        Page<FileDetail> levels = CACHE.get(event.getUserId());
 
         if (levels == null) {
             log.info("用户 {} 未搜索文件", event.getUserId());
             return;
         }
 
-        List<File> page = ListUtil.page(PAGE_CACHE.get(event.getUserId()), pageSize, levels);
-
-        if (rowIndex < 0 || rowIndex > page.size()) {
+        if (rowIndex < 0 || rowIndex > levels.getRecords().size()) {
             MsgUtils msg = MsgUtils.builder()
                     .reply(event.getMessageId())
                     .text("请输入正确的序号\n")
@@ -328,7 +290,8 @@ public class BaseFunction {
             return;
         }
 
-        File level = page.get(rowIndex - 1);
+        FileDetail fdl = levels.getRecords().get(rowIndex - 1);
+        File level = FileUtil.file(rootPath, LEVELS, fdl.getFilePath());
 
         if (FileUtil.del(level)) {
             MsgUtils msg = MsgUtils.builder()
@@ -346,7 +309,6 @@ public class BaseFunction {
             String errMsg = ResultMsgUtil.msgWithNotice(msg);
             bot.sendGroupMsg(event.getGroupId(), errMsg, false);
         }
-
     }
 
 }
