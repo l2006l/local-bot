@@ -36,6 +36,21 @@ public class Permission extends MetaModelVo {
 
     @EruptField(
             views = @View(
+                    title = "名称",
+                    desc = "权限账号的群名/用户名标识"
+            ),
+            edit = @Edit(
+                    title = "名称",
+                    desc = "权限账号的群名/用户名标识",
+                    search = @Search(
+                            vague = true
+                    )
+            )
+    )
+    private String name;
+
+    @EruptField(
+            views = @View(
                     title = "账号",
                     width = "10%"
             ),
