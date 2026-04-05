@@ -47,9 +47,11 @@ public class SyncFileUtil {
         List<FileDetail> fdl = new ArrayList<>();
         FileUtil.walkFiles(FileUtil.file(rootPath, TEMP_PATH), file -> {
             count.getAndIncrement();
-            if (!file.getName().endsWith(".zip")
-                    && !file.getName().endsWith(".rar")
-                    && !file.getName().endsWith(".7z")) {
+            String fname = file.getName().toLowerCase();
+            if (!fname.endsWith(".zip")
+                    && !fname.endsWith(".rar")
+                    && !fname.endsWith(".7z")) {
+                FileUtil.del(file);
                 return;
             }
             String fmd5 = DigestUtil.md5Hex(file);
@@ -79,7 +81,9 @@ public class SyncFileUtil {
             mapper.insert(fdl);
             fdl.clear();
         }
+        FileUtil.cleanEmpty(FileUtil.file(rootPath, TEMP_PATH));
         log.info("整合完成");
+        FileUtil.mkdir(FileUtil.file(rootPath, TEMP_PATH));
         return count.get();
     }
 

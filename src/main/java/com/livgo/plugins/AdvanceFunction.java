@@ -164,9 +164,10 @@ public class AdvanceFunction {
         if (PermissionUtil.isBlackUser(event.getUserId())) {
             return;
         }
-        if (!event.getFile().getName().endsWith(".zip")
-                && !event.getFile().getName().endsWith(".rar")
-                && !event.getFile().getName().endsWith(".7z")) {
+        String fname = event.getFile().getName().toLowerCase();
+        if (!fname.endsWith(".zip")
+                && !fname.endsWith(".rar")
+                && !fname.endsWith(".7z")) {
             log.info("文件格式错误");
             return;
         }
@@ -289,9 +290,10 @@ public class AdvanceFunction {
     }
 
     public static boolean isZip(GroupFilesResp.Files f) {
-        return f.getFileName().endsWith(".zip")
-                || f.getFileName().endsWith(".rar")
-                || f.getFileName().endsWith(".7z");
+        String fname = f.getFileName().toLowerCase();
+        return fname.endsWith(".zip")
+                || fname.endsWith(".rar")
+                || fname.endsWith(".7z");
     }
 
 }

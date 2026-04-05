@@ -305,9 +305,11 @@ public class UserFunction {
                     .reply(event.getMessageId())
                     .text("删除失败，文件可能已删除\n")
                     .text("---------------\n");
-
             String errMsg = ResultMsgUtil.msgWithNotice(msg);
             bot.sendGroupMsg(event.getGroupId(), errMsg, false);
+        }
+        if (fileDetailMapper.exists(new LambdaQueryWrapper<>(FileDetail.class).eq(FileDetail::getId, fdl.getId()))) {
+            fileDetailMapper.deleteById(fdl.getId());
         }
     }
 
