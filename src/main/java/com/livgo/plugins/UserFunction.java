@@ -252,7 +252,7 @@ public class UserFunction {
 
         FileDetail fdl = fpl.getRecords().get(rowIndex - 1);
 
-        File level = FileUtil.file(rootPath, LEVELS, fdl.getFilePath());
+        File level = FileUtil.file(rootPath, fdl.getFilePath());
 
         bot.uploadGroupFile(event.getGroupId(), level.getAbsolutePath(), fdl.getOriginalFileName());
 
@@ -291,7 +291,7 @@ public class UserFunction {
         }
 
         FileDetail fdl = levels.getRecords().get(rowIndex - 1);
-        File level = FileUtil.file(rootPath, LEVELS, fdl.getFilePath());
+        File level = FileUtil.file(rootPath, fdl.getFilePath());
 
         if (FileUtil.del(level)) {
             MsgUtils msg = MsgUtils.builder()
