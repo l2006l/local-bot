@@ -1,89 +1,142 @@
 # 文件机器人（本地存储版）
+
 ## 该项目是由于本人有qq自动传文件的需求，所以利用 shiro qq机器人框架实现的机器人
+
 # 开发环境
-## JDK 17,SpringBoot3, shiro qq机器人框架 2.5.0, napcat
+
+## JDK 17,SpringBoot3, shiro qq机器人框架 2.5.0, napcat， Erupt低代码框架
+
 # 目前已实现：
-### 1.qq群文件的同步（指定群号/机器人所在的所有群聊）
-### 2.单个群的文件上传事件监听，同步将文件下载保存到本地
-### 3.可通过qq直接搜索并下载文件
-### 4.本地文件的去重功能（simple模式下载时自动去重，standard模式需要手动发送去重）
-### 5.搜索结果后可以添加公告，公告写在message.txt即可，请不要写太长，以免被风控（修改后无需重新启动）
-### 6.本地已有的文件可以将文件名、大小、相对路径导出到excel
-### 7.由于只是我自己使用，所以并没有添加数据库，如果有需要的可以自行添加
-### 8.本人只是一个代码萌新，如果有写的不好的请多包涵，我已经尽力了
+
+- [x] 1.qq群文件的同步（指定群号/机器人所在的所有群聊）
+
+- [x] 2.单个群的文件上传事件监听，同步将文件下载保存到本地
+
+- [x] 3.可通过qq直接搜索并下载文件
+
+~~4.本地文件的去重功能（simple模式下载时自动去重，standard模式需要手动发送去重）~~
+
+- [x] 4.添加数据库存储文件信息和Erupt框架实现文件管理
+
+- [x] 5.搜索结果后可以添加公告，公告写在message.txt即可，请不要写太长，以免被风控（修改后无需重新启动）
+
+- [x] 6.本地已有的文件可以将文件名、大小、相对路径导出到excel
+
+~~7.由于只是我自己使用，所以并没有添加数据库，如果有需要的可以自行添加~~
+
+8.本人只是一个代码萌新，如果有写的不好的请多包涵，我已经尽力了
 
 ## 配置文件
+
 application.yml
+
+这里是完整版的，快速启动则不需要进行任何配置，可以实现一键部署
+
 ```yaml
 spring:
   application:
     name: local-bot
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:./data/db;AUTO_SERVER=TRUE;MODE=MySQL;NON_KEYWORDS=VALUE
+    username: sa
+    password:
+  jpa:
+    generate-ddl: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    database: h2
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+  sql:
+    init:
+      encoding: UTF-8
+      mode: always
+      data-locations: sql/init.sql
 
-server:
-  port: 8080
+mybatis-plus:
+  global-config:
+    banner: false
+    db-config:
+      id-type: assign_id
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    lazy-loading-enabled: true
+
+erupt-app:
+  verify-code-count: 1
+  reset-pwd: true
+  water-mark: false
+erupt:
+  upload-path: ${run.upload-path:${user.dir}/upload}
+  hot-build: false
+  upms:
+    default-account: admin
+    default-password: admin
+    expire-time-by-login: 24
 shiro:
   ws:
     server:
-      url: /ws/shiro
+      url: /ws/shiro  # 反向websocket的端点
       enable: true
 
+server:
+  tomcat:
+    max-http-form-post-size: -1
+    max-swallow-size: -1
+  port: 8080             # 项目端口
 run:
-  mode: simple                # simple / standard   运行模式
-  location: your/work/dir     # 工作目录，即jar包所在路径
-  pwd: password               # 全部同步用到的的密码
-  admin: [123456,123345]      # 管理员qq号，部分场景下用到
-  groupList: [123345,123435]  # 白名单群号，即：启用功能的群聊，为空则默认全部群聊
-  autoGroup: 1234567          # 自动监听群聊，有文件自动上传
-  pageSize: 10                # 搜索结果分页大小
-
+  pageSize: 20         # 搜索结果分页大小
+  upload-path: ${user.dir}/upload     # 公告图片的保存位置
+  napcat-web: "http://127.0.0.1:6099"     # napcat的web地址，可以将napcat的页面嵌入到项目首页
 ```
 
 ## 所有指令
-| 指令名称 | 操作范围  |       模式        |       参数       |   指令格式    |
-|:----:|:-----:|:---------------:|:--------------:|:---------:|
-|  搜索  |  群聊   | simple/standrad |      关键词       |  搜索 xxx   |
-|  下载  |  群聊   | simple/standard |       序号       |   下载 1    |
-|  删除  |  群聊   | simple/standard |       序号       |   删除 1    |
-| 上一页  |  群聊   | simple/standard |       无        |    上一页    |
-| 下一页  |  群聊   | simple/standard |       无        |    下一页    |
-| 文件列表 | 私聊/群聊 | simple/standard |       无        |   文件列表    |
-| 同步群聊 |  私聊   | simple/standard |   机器人所在群的群号    | 同步群聊 [群号] |
-| 全部同步 |  私聊   | simple/standaer | 密码（配置的run.pwd） | 全部同步 [密码] |
-| 离线同步 |  私聊   |     simple      |       无        |   全部同步    |
-|  去重  |  私聊   |    standard     |       无        |    去重     |
-### 基础指令： 搜索 （关键词）、 下载 [序号] 、上一页 、 下一页、删除
-### 文件同步： 同步群聊 [群号] 、同步所有
-### 文件列表：文件列表
-### simple模式： 离线同步
-### standard模式： 去重
 
-## 最终文件树
-### simple模式
+|        指令名称        |  操作范围  |            参数             |          指令格式           | 权限需要 |
+|:------------------:|:------:|:-------------------------:|:-----------------------:|:----:|
+|         搜索         |   群聊   |            关键词            |         搜索 xxx          | 白名单群 |
+|         下载         |   群聊   |            序号             |          下载 1           | 白名单群 |
+|         删除         |   群聊   |            序号             |          删除 1           | 白名单群 |
+|        上一页         |   群聊   |             无             |           上一页           | 白名单群 |
+|        下一页         |   群聊   |             无             |           下一页           | 白名单群 |
+|        文件列表        | 私聊/群聊  |             无             |          文件列表           |  无   |
+|        同步群聊        |   私聊   |         机器人所在群的群号         |        同步群聊 [群号]        |  超管  |
+|        全部同步        |   私聊   | ~~密码（配置的run.pwd）~~ <br/>无 | ~~全部同步 [密码]~~ <br/>全部同步 |  超管  |
+| ~~离线同步~~ <br/>文件整合 | 私聊/群聊  |             无             |   ~~离线同步~~ <br/>文件整合    |  超管  |
+|       ~~去重~~       | ~~私聊~~ |           ~~无~~           |         ~~去重~~          |      |
+
+## 其他
+
+- 项目利用erupt生成了一个文件管理后台，项目启动后可以访问 `http://localhost:8080` 进入后台配置用户白名单等内容
+- 可以在后台配置配置公告（可加图片），公告会附带在几乎所有机器人回复的结尾处，可以用来做通知或者机器人的图文教程等内容
+- 可以在后台创建新用户，设置权限等（均由Erupt提供），可以用多人管理，也可以利用角色控制菜单的访问
+
+# 使用
+
+1. 下载jre或者jdk并配置环境变量，这部分不再提供详细教程
+2. 拉取项目代码或者直接下载发行版提供的jar包
+3. 填写 `application.yml` 配置文件 (非必须，如果需要请看下文，不需要上文的完整配置)
+4. java -jar 启动 jar 即可
+5. 访问 `http://localhost:8080` 账号密码为admin/admin
+
+```yaml
+server:
+  port: 8080              # 项目端口
+run:
+  pageSize: 20         # 搜索结果分页大小
+  upload-path: ${user.dir}/upload     # 公告图片的保存位置    ${user.dir} 是jar包所在的路径，请不要改这部分，需要配置的就是 /upload
+  napcat-web: "http://127.0.0.1:6099"     # napcat的web地址，可以将napcat的页面嵌入到项目首页
 ```
-项目根目录/
-├─ levels/
-│  ├─ f7b8752601935ca67bed0d79028f7983/
-│  │  ├─ xxx.zip
-├─ tempFile/
-├─ app.jar
-```
-### standard模式
-```
-项目根目录/
-├─ levels/
-│  ├─ 123456/
-│  │  ├─ xxx.zip
-├─ tempFile/
-├─ app.jar
-```
 
-### simple模式的文件结构是 levels/文件md5值/文件名
-### standard模式文件结构是 levels/群号/文件名
+如果你的napcat就是本地运行且端口为6099，则可以不配置napcat-web这一项
 
-### simple模式下，文件在下载时自动进行了去重，在此基础上，不需要单独分出高性能的运算做大规模文件去重
-### standard模式下，文件在下载时没有进行去重，但是这个结构更适合自己对文件进行管理，手动去重虽然会短时间进行大量IO操作，但相比之下对文件的控制更强
+如果napcat符合条件，且对其余配置没有需求，可以不创建application.yml，直接启动 jar
 
-### 如果你的服务器采用机械硬盘，强烈建议使用simple模式，由于机械硬盘的性质，我也不知道如何解决机械硬盘的IO性能问题
+# 写在最后
 
-## 部署
-### 本项目使用 napcat 作为websocket客户端，部署请参考napcat官网，本项目采用反向连接，将napcat的websocket客户端连接配置为```ws://ip:8080/ws/shiro``` 即可
+- napcat 说明文档 [napcat快速开始](https://napcat.napneko.icu/guide/start-install)
+- Erup 官方文档 [Erupt文档](https://www.yuque.com/erupts/erupt)
+- Shiro 框架官网 [Shiro快速开始](https://misakatat.github.io/shiro-docs/)

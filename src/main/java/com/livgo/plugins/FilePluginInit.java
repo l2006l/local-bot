@@ -1,8 +1,8 @@
 package com.livgo.plugins;
 
 import cn.hutool.core.io.FileUtil;
+import com.livgo.utils.PathUtil;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -15,12 +15,6 @@ import java.io.File;
  */
 @Component
 public class FilePluginInit {
-
-    /**
-     * 运行位置
-     */
-    @Value("${run.location}")
-    public String runLocation;
 
     /**
      * 临时文件目录
@@ -39,13 +33,11 @@ public class FilePluginInit {
     @PostConstruct
     public void init() {
 
-        File tempFile = FileUtil.file(runLocation, TEMP_FILE);
+        String rootPath = PathUtil.getJarPath();
 
-        File levels = FileUtil.file(runLocation, LEVELS);
+        File tempFile = FileUtil.file(rootPath, TEMP_FILE);
 
-        File message = FileUtil.file(runLocation, "message.txt");
-
-        FileUtil.touch(message);
+        File levels = FileUtil.file(rootPath, LEVELS);
 
         FileUtil.mkdir(tempFile);
 
