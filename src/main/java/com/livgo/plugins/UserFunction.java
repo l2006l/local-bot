@@ -67,7 +67,7 @@ public class UserFunction {
 
         Page<FileDetail> pg = new Page<>(1, pageSize);
         LambdaQueryWrapper<FileDetail> query = new LambdaQueryWrapper<>();
-        query.like(FileDetail::getFileAliasName, keyword);
+        query.apply("LOWER(file_alias_name) LIKE LOWER(CONCAT('%',{0},'%'))", keyword);
         Page<FileDetail> fpl = fileDetailMapper.selectPage(pg, query);
 
         // 判断搜索结果是否为空
