@@ -2,7 +2,9 @@ package com.livgo.po;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.livgo.dtproxy.FileDetailProxy;
-import com.livgo.handler.FileDetailOperationHandler;
+import com.livgo.handler.FileDetailOriginAll;
+import com.livgo.handler.FileDetailOriginPart;
+import com.livgo.handler.FileDetailSyncHandler;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,13 +31,28 @@ import java.time.LocalDateTime;
                 export = true
         ),
         dataProxy = FileDetailProxy.class,
-        rowOperation = @RowOperation(
-                title = "文件整合",
-                mode = RowOperation.Mode.BUTTON,
-                tip = "点击后可将tempFile文件夹下的文件合并到levels下",
-                operationHandler = FileDetailOperationHandler.class,
-                callHint = "确定要将tempFile文件夹下的文件合并到levels吗？\n tempFile中的文件将不会保留"
-        )
+        rowOperation = {
+                @RowOperation(
+                        title = "文件整合",
+                        mode = RowOperation.Mode.BUTTON,
+                        tip = "点击后可将tempFile文件夹下的文件合并到levels下",
+                        operationHandler = FileDetailSyncHandler.class,
+                        callHint = "确定要将tempFile文件夹下的文件合并到levels吗？\n tempFile中的文件将不会保留"
+                ),
+                @RowOperation(
+                        title = "部分转出",
+                        tip = "将选择的文件转出",
+                        operationHandler = FileDetailOriginPart.class,
+                        callHint = "确定要将所选文件转出吗？\n 请确保磁盘空间充足"
+                ),
+                @RowOperation(
+                        title = "文件转出",
+                        mode = RowOperation.Mode.BUTTON,
+                        tip = "点击后可以将文件恢复并保存到origin文件夹下",
+                        operationHandler = FileDetailOriginAll.class,
+                        callHint = "确定要将所有文件备份吗？\n 请确保磁盘空间充足"
+                )
+        }
 )
 @Table(name = "file_detail")
 @Entity

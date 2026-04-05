@@ -83,7 +83,7 @@ public class SyncFileUtil {
         }
         FileUtil.cleanEmpty(FileUtil.file(rootPath, TEMP_PATH));
         log.info("整合完成");
-        FileUtil.mkdir(FileUtil.file(rootPath, TEMP_PATH));
+        FileUtil.mkdir(FileUtil.file(rootPath, LEVELS));
         return count.get();
     }
 

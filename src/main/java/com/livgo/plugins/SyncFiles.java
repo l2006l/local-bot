@@ -1,7 +1,6 @@
 package com.livgo.plugins;
 
 import cn.hutool.core.io.FileUtil;
-import com.livgo.mapper.FileDetailMapper;
 import com.livgo.utils.PermissionUtil;
 import com.livgo.utils.ResultMsgUtil;
 import com.livgo.utils.SyncFileUtil;
@@ -11,7 +10,6 @@ import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.common.utils.MsgUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
-import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import static com.livgo.utils.PathUtil.getJarPath;
@@ -23,11 +21,6 @@ public class SyncFiles {
     private final String rootPath = getJarPath();
 
     private final String TEMP_PATH = "tempFile";
-
-    private final String LEVELS = "levels";
-
-    @Resource
-    private FileDetailMapper mapper;
 
     @AnyMessageHandler
     @MessageHandlerFilter(cmd = "文件整合")
