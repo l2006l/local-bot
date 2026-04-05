@@ -41,16 +41,16 @@ import java.time.LocalDateTime;
                 ),
                 @RowOperation(
                         title = "部分转出",
-                        tip = "将选择的文件转出",
+                        tip = "将选择的文件转出到origin-part文件夹下",
                         operationHandler = FileDetailOriginPart.class,
                         callHint = "确定要将所选文件转出吗？\n 请确保磁盘空间充足"
                 ),
                 @RowOperation(
                         title = "文件转出",
                         mode = RowOperation.Mode.BUTTON,
-                        tip = "点击后可以将文件恢复并保存到origin文件夹下",
+                        tip = "将所有文件转出到origin-all文件夹下",
                         operationHandler = FileDetailOriginAll.class,
-                        callHint = "确定要将所有文件备份吗？\n 请确保磁盘空间充足"
+                        callHint = "确定要将所有文件转出吗？\n 请确保磁盘空间充足"
                 )
         }
 )

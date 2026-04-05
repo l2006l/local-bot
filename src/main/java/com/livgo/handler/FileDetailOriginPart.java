@@ -10,6 +10,9 @@ import xyz.erupt.annotation.fun.OperationHandler;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.livgo.utils.DoToOrigin.doToOrigin;
 
 public class FileDetailOriginPart implements OperationHandler<FileDetail, Void> {
 
@@ -20,35 +23,13 @@ public class FileDetailOriginPart implements OperationHandler<FileDetail, Void> 
         if (data.isEmpty()) {
             return "window.msg.warning('请选择需要转出的文件')";
         }
-        Integer  count = 0;
+        AtomicInteger count = new AtomicInteger();
         String dateStr = DateUtil.format(DateUtil.date(), "yyyy-MM-dd");
         for (FileDetail fd : data) {
-            File oriFile = FileUtil.file(PathUtil.getJarPath(), fd.getFilePath());
-            File target = FileUtil.file(PathUtil.getJarPath(),
-                    ORIGIN,
-                    dateStr,
-                    fd.getOriginalFileName());
-            if (target.exists() && target.isFile()) {
-                if (DigestUtil.md5Hex(target).equals(fd.getFileMd5())) {
-                    continue;
-                }
-                String nameWithOutExt = FileNameUtil.mainName(oriFile);
-                File f = FileUtil.file(PathUtil.getJarPath(),
-                        ORIGIN,
-                        dateStr,
-                        nameWithOutExt,
-                        fd.getOriginalFileName());
-                if (FileUtil.exist(f)) {
-                    continue;
-                }
-                FileUtil.copy(oriFile, f, false);
-                count++;
-                continue;
-            }
-            FileUtil.copy(oriFile, target, false);
-            count++;
+            doToOrigin(fd, dateStr, count, ORIGIN);
         }
         String msg = "整合完成，共处理" + count + "个文件";
         return String.format("window.msg.info('%s')", msg);
     }
+
 }
