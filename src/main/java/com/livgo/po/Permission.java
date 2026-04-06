@@ -20,7 +20,7 @@ import xyz.erupt.upms.handler.DictChoiceFetchHandler;
 
 
 @Erupt(
-        name = "权限管理",
+        name = "权限管理-t",
         layout = @Layout(
                 formSize = Layout.FormSize.FULL_LINE
         ),
@@ -64,7 +64,7 @@ public class Permission extends MetaModelVo {
                     )
             )
     )
-    private Long account;
+    private Long userAccount;
 
     @EruptField(
             views = @View(
@@ -82,7 +82,7 @@ public class Permission extends MetaModelVo {
                     notNull = true
             )
     )
-    private Integer identity;
+    private Long identity;
 
     @EruptField(
             views = @View(

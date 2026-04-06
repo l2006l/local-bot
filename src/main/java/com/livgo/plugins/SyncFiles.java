@@ -20,23 +20,20 @@ public class SyncFiles {
 
     private final String rootPath = getJarPath();
 
-    private final String TEMP_PATH = "tempFile";
-
     @AnyMessageHandler
     @MessageHandlerFilter(cmd = "文件整合")
     public void syncFiles(Bot bot, AnyMessageEvent event) {
-        if (!PermissionUtil.isAdmin(event.getUserId())) {
+        if (!PermissionUtil.isAdmin(bot.getSelfId(), event.getUserId())) {
             return;
         }
-        if (PermissionUtil.isBlackUser(event.getUserId())) {
-            return;
-        }
+
         int count = SyncFileUtil.syncFiles();
         MsgUtils msg = MsgUtils.builder()
                 .text("整合完成\n")
                 .text("共计" + count + "个文件")
                 .text("==================\n");
 
+        String TEMP_PATH = "tempFile";
         FileUtil.cleanEmpty(FileUtil.file(rootPath, TEMP_PATH));
 
         bot.sendMsg(event, ResultMsgUtil.msgWithNotice(msg), false);

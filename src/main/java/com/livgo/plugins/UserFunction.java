@@ -53,12 +53,11 @@ public class UserFunction {
     @GroupMessageHandler
     @MessageHandlerFilter(cmd = "^搜索\s*(.*)?$")
     public void search(Bot bot, GroupMessageEvent event, Matcher matcher) {
-        // 判断群是否在群组列表内
-        if (!PermissionUtil.inGroupList(event.getGroupId())) {
+        if (PermissionUtil.isBlackUser(bot.getSelfId(), event.getUserId())) {
             return;
         }
-
-        if (PermissionUtil.isBlackUser(event.getUserId())) {
+        // 判断群是否在群组列表内
+        if (!PermissionUtil.inGroupList(bot.getSelfId(), event.getGroupId())) {
             return;
         }
 
@@ -114,11 +113,13 @@ public class UserFunction {
     @MessageHandlerFilter(cmd = "上一页")
     public void prevPage(Bot bot, GroupMessageEvent event) {
 
-        if (!PermissionUtil.inGroupList(event.getGroupId())) {
+        if (PermissionUtil.isBlackUser(bot.getSelfId(),
+                event.getUserId())) {
             return;
         }
 
-        if (PermissionUtil.isBlackUser(event.getUserId())) {
+        if (!PermissionUtil.inGroupList(bot.getSelfId(),
+                event.getGroupId())) {
             return;
         }
 
@@ -178,12 +179,12 @@ public class UserFunction {
     @GroupMessageHandler
     @MessageHandlerFilter(cmd = "下一页")
     public void nextPage(Bot bot, GroupMessageEvent event) {
-
-        if (!PermissionUtil.inGroupList(event.getGroupId())) {
+        if (PermissionUtil.isBlackUser(bot.getSelfId(), event.getUserId())) {
             return;
         }
 
-        if (PermissionUtil.isBlackUser(event.getUserId())) {
+        if (!PermissionUtil.inGroupList(bot.getSelfId(),
+                event.getGroupId())) {
             return;
         }
 
@@ -220,11 +221,13 @@ public class UserFunction {
     @MessageHandlerFilter(cmd = "^下载\s*(\\d+)$")
     public void download(Bot bot, GroupMessageEvent event, Matcher matcher) {
 
-        if (!PermissionUtil.inGroupList(event.getGroupId())) {
+        if (PermissionUtil.isBlackUser(bot.getSelfId(),
+                event.getUserId())) {
             return;
         }
 
-        if (PermissionUtil.isBlackUser(event.getUserId())) {
+        if (!PermissionUtil.inGroupList(bot.getSelfId(),
+                event.getGroupId())) {
             return;
         }
 
@@ -261,12 +264,13 @@ public class UserFunction {
     @GroupMessageHandler
     @MessageHandlerFilter(cmd = "^删除\s*(\\d+)?$")
     public void delete(Bot bot, GroupMessageEvent event, Matcher matcher) {
-
-        if (!PermissionUtil.isAdmin(event.getUserId()) && !PermissionUtil.isWhiteUser(event.getUserId())) {
+        if (PermissionUtil.isBlackUser(bot.getSelfId(),
+                event.getUserId())) {
             return;
         }
 
-        if (PermissionUtil.isBlackUser(event.getUserId())) {
+        if (!PermissionUtil.isAdmin(bot.getSelfId(), event.getUserId())
+                && !PermissionUtil.isWhiteUser(bot.getSelfId(), event.getUserId())) {
             return;
         }
 

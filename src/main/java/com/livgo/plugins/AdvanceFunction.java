@@ -65,11 +65,8 @@ public class AdvanceFunction {
     @MessageHandlerFilter(cmd = "全部同步")
     public void allSync(Bot bot, PrivateMessageEvent event) {
 
-        if (!PermissionUtil.isAdmin(event.getUserId())) {
-            return;
-        }
-
-        if (PermissionUtil.isBlackUser(event.getUserId())) {
+        if (!PermissionUtil.isAdmin(bot.getSelfId(),
+                event.getUserId())) {
             return;
         }
 
@@ -111,11 +108,8 @@ public class AdvanceFunction {
     @MessageHandlerFilter(cmd = "^同步群聊 (.\\d+)$")
     public void groupUpdate(Bot bot, PrivateMessageEvent event, Matcher matcher) {
 
-        if (!PermissionUtil.isAdmin(event.getUserId())) {
-            return;
-        }
-
-        if (PermissionUtil.isBlackUser(event.getUserId())) {
+        if (!PermissionUtil.isAdmin(bot.getSelfId(),
+                event.getUserId())) {
             return;
         }
 
@@ -157,13 +151,18 @@ public class AdvanceFunction {
     @GroupUploadNoticeHandler
     public void groupUpdate(Bot bot, GroupUploadNoticeEvent event) {
 
-        if (!PermissionUtil.isAutoUpload(event.getGroupId())
-                && !PermissionUtil.isAutoUpload(event.getUserId())) {
+        if (PermissionUtil.isBlackUser(bot.getSelfId(),
+                event.getUserId())) {
             return;
         }
-        if (PermissionUtil.isBlackUser(event.getUserId())) {
+
+        if (!PermissionUtil.isAutoUpload(bot.getSelfId(),
+                event.getGroupId())
+                && !PermissionUtil.isAutoUpload(bot.getSelfId(),
+                event.getUserId())) {
             return;
         }
+
         String fname = event.getFile().getName().toLowerCase();
         if (!fname.endsWith(".zip")
                 && !fname.endsWith(".rar")

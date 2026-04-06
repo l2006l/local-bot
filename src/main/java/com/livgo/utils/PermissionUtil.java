@@ -1,14 +1,22 @@
 package com.livgo.utils;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.livgo.constant.PermissionConstant;
-import com.livgo.mapper.PermissionMapper;
+import cn.hutool.core.collection.ConcurrentHashSet;
 import com.livgo.po.Permission;
+import com.livgo.po.PermissionBot;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import xyz.erupt.jpa.dao.EruptDao;
 
-import static com.livgo.constant.PermissionConstant.ADMIN;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static com.livgo.constant.PermissionConstant.*;
 
 /**
  * 权限工具类
@@ -20,17 +28,32 @@ import static com.livgo.constant.PermissionConstant.ADMIN;
 @Slf4j
 public class PermissionUtil {
 
-    private final PermissionMapper permissionMapper;
+    @Resource
+    private EruptDao eruptDao;
 
-    private static PermissionMapper mapper;
+    private static final ConcurrentHashSet<Set<Long>> CACHE = new ConcurrentHashSet<>();
 
-    public PermissionUtil(PermissionMapper permissionMapper) {
-        this.permissionMapper = permissionMapper;
-    }
-
-    @PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
+    @Transactional
     public void init() {
-        mapper = permissionMapper;
+        CACHE.clear();
+        List<PermissionBot> list = eruptDao.lambdaQuery(PermissionBot.class)
+                .with(PermissionBot::getPermissions)
+                .with()
+                .list();
+
+        for (PermissionBot permissionBot : list) {
+            for (Permission permission : permissionBot.getPermissions()) {
+                if (!permission.isStatus()) {
+                    continue;
+                }
+                Set<Long> set = new HashSet<>();
+                set.add(permissionBot.getBotAccount());
+                set.add(permission.getUserAccount());
+                set.add(permission.getIdentity());
+                CACHE.add(set);
+            }
+        }
     }
 
 
@@ -40,12 +63,12 @@ public class PermissionUtil {
      * @param userId
      * @return
      */
-    public static boolean isAdmin(Long userId) {
-        LambdaQueryWrapper<Permission> query = new LambdaQueryWrapper<>();
-        query.eq(Permission::getAccount, userId)
-                .eq(Permission::getIdentity, ADMIN)
-                .eq(Permission::isStatus, true);
-        return mapper.selectCount(query) > 0;
+    public static boolean isAdmin(Long botId, Long userId) {
+        Set<Long> set = new HashSet<>();
+        set.add(botId);
+        set.add(userId);
+        set.add(ADMIN);
+        return CACHE.contains(set);
     }
 
     /**
@@ -54,12 +77,12 @@ public class PermissionUtil {
      * @param groupId
      * @return true 是
      */
-    public static boolean inGroupList(Long groupId) {
-        LambdaQueryWrapper<Permission> query = new LambdaQueryWrapper<>();
-        query.eq(Permission::getAccount, groupId)
-                .eq(Permission::getIdentity, PermissionConstant.GROUP_WHITE_LIST)
-                .eq(Permission::isStatus, true);
-        return mapper.selectCount(query) > 0;
+    public static boolean inGroupList(Long botId, Long groupId) {
+        Set<Long> set = new HashSet<>();
+        set.add(botId);
+        set.add(groupId);
+        set.add(GROUP_WHITE_LIST);
+        return CACHE.contains(set);
     }
 
     /**
@@ -68,12 +91,12 @@ public class PermissionUtil {
      * @param guId
      * @return true  是
      */
-    public static boolean isAutoUpload(Long guId) {
-        LambdaQueryWrapper<Permission> query = new LambdaQueryWrapper<>();
-        query.eq(Permission::getAccount, guId)
-                .eq(Permission::getIdentity, PermissionConstant.AUTO_UPDATE_GROUP)
-                .eq(Permission::isStatus, true);
-        return mapper.selectCount(query) > 0;
+    public static boolean isAutoUpload(Long botId, Long guId) {
+        Set<Long> set = new HashSet<>();
+        set.add(botId);
+        set.add(guId);
+        set.add(AUTO_UPDATE_GROUP);
+        return CACHE.contains(set);
     }
 
     /**
@@ -82,12 +105,12 @@ public class PermissionUtil {
      * @param userId
      * @return true 是
      */
-    public static boolean isWhiteUser(Long userId) {
-        LambdaQueryWrapper<Permission> query = new LambdaQueryWrapper<>();
-        query.eq(Permission::getAccount, userId)
-                .eq(Permission::getIdentity, PermissionConstant.USER_WHITE_LIST)
-                .eq(Permission::isStatus, true);
-        return mapper.selectCount(query) > 0;
+    public static boolean isWhiteUser(Long botId, Long userId) {
+        Set<Long> set = new HashSet<>();
+        set.add(botId);
+        set.add(userId);
+        set.add(USER_WHITE_LIST);
+        return CACHE.contains(set);
     }
 
     /**
@@ -96,12 +119,12 @@ public class PermissionUtil {
      * @param userId
      * @return
      */
-    public static boolean isBlackUser(Long userId) {
-        LambdaQueryWrapper<Permission> query = new LambdaQueryWrapper<>();
-        query.eq(Permission::getAccount, userId)
-                .eq(Permission::getIdentity, PermissionConstant.USER_BLACK_LIST)
-                .eq(Permission::isStatus, true);
-        return mapper.selectCount(query) > 0;
+    public static boolean isBlackUser(Long botId, Long userId) {
+        Set<Long> set = new HashSet<>();
+        set.add(botId);
+        set.add(userId);
+        set.add(USER_BLACK_LIST);
+        return CACHE.contains(set);
     }
 
 }

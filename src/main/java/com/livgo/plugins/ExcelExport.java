@@ -36,7 +36,7 @@ public class ExcelExport {
     @MessageHandlerFilter(cmd = "文件列表")
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public void list(Bot bot, AnyMessageEvent event) {
-        if (PermissionUtil.isBlackUser(event.getUserId())) {
+        if (PermissionUtil.isBlackUser(bot.getSelfId(), event.getUserId())) {
             return;
         }
         List<FileDetail> fdl = new ArrayList<>();

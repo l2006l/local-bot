@@ -12,6 +12,23 @@ create table if not exists E_DICT
     NAME        CHARACTER VARYING(255),
     REMARK      CHARACTER VARYING(255)
 );
+
+comment on table E_DICT is '数据字典';
+
+comment on column E_DICT.CREATE_BY is '创建人';
+
+comment on column E_DICT.CREATE_TIME is '创建时间';
+
+comment on column E_DICT.UPDATE_BY is '更新人';
+
+comment on column E_DICT.UPDATE_TIME is '更新时间';
+
+comment on column E_DICT.CODE is '编码';
+
+comment on column E_DICT.NAME is '名称';
+
+comment on column E_DICT.REMARK is '备注';
+
 create table if not exists E_DICT_ITEM
 (
     ID            BIGINT auto_increment
@@ -31,6 +48,27 @@ create table if not exists E_DICT_ITEM
     constraint FKRRBI2DT94RJD8SJT830M3W0A
         foreign key (ERUPT_DICT_ID) references E_DICT
 );
+
+comment on table E_DICT_ITEM is '字典项';
+
+comment on column E_DICT_ITEM.CREATE_BY is '创建人';
+
+comment on column E_DICT_ITEM.CREATE_TIME is '创建时间';
+
+comment on column E_DICT_ITEM.UPDATE_BY is '更新人';
+
+comment on column E_DICT_ITEM.UPDATE_TIME is '更新时间';
+
+comment on column E_DICT_ITEM.CODE is '编码';
+
+comment on column E_DICT_ITEM.NAME is '名称';
+
+comment on column E_DICT_ITEM.REMARK is '备注';
+
+comment on column E_DICT_ITEM.SORT is '显示顺序';
+
+comment on column E_DICT_ITEM.VAL is '值';
+
 create table if not exists E_UPMS_MENU
 (
     ID             BIGINT auto_increment
@@ -53,387 +91,119 @@ create table if not exists E_UPMS_MENU
     constraint FK5MKGEA183MM02V7IC1PDWXY5S
         foreign key (PARENT_MENU_ID) references E_UPMS_MENU
 );
-MERGE INTO PUBLIC.E_DICT (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, NAME, REMARK) VALUES (1, 'erupt',
-                                                                                                          '2026-04-03 13:31:28.819832',
-                                                                                                          'erupt',
-                                                                                                          '2026-04-03 13:31:28.819832',
-                                                                                                          'permission',
-                                                                                                          '权限等级',
-                                                                                                          null);
-MERGE INTO PUBLIC.E_DICT_ITEM (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, NAME, REMARK, SORT, VAL,
-                               ERUPT_DICT_ID) VALUES (1, 'erupt', '2026-04-03 13:31:47.919620', 'livgo',
-                                                      '2026-04-04 12:01:34.395759', 'admin', '超管',
-                                                      '最高权限，在“全部同步”功能中使用', 0, '0', 1);
-MERGE INTO PUBLIC.E_DICT_ITEM (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, NAME, REMARK, SORT, VAL,
-                               ERUPT_DICT_ID) VALUES (2, 'erupt', '2026-04-03 13:32:11.731101', 'livgo',
-                                                      '2026-04-04 12:02:13.250829', 'gwhite', '白名单群',
-                                                      '配置允许哪个群聊使用功能', 1, '1', 1);
-MERGE INTO PUBLIC.E_DICT_ITEM (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, NAME, REMARK, SORT, VAL,
-                               ERUPT_DICT_ID) VALUES (3, 'erupt', '2026-04-03 13:32:26.732952', 'livgo',
-                                                      '2026-04-04 12:02:59.847046', 'guser', '白名单用户',
-                                                      '允许哪些用户使用“删除”功能', 2, '2', 1);
-MERGE INTO PUBLIC.E_DICT_ITEM (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, NAME, REMARK, SORT, VAL,
-                               ERUPT_DICT_ID) VALUES (4, 'erupt', '2026-04-03 13:32:54.813192', 'livgo',
-                                                      '2026-04-04 19:10:55.205763', 'gauto', '自动上传',
-                                                      '监听群内文件上传并自动存入系统', 3, '3', 1);
-MERGE INTO PUBLIC.E_DICT_ITEM (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, NAME, REMARK, SORT, VAL,
-                               ERUPT_DICT_ID) VALUES (5, 'erupt', '2026-04-03 13:34:04.293930', 'livgo',
-                                                      '2026-04-04 12:03:39.807128', 'buser', '黑名单用户',
-                                                      '禁用机器人的用户', 4, '4', 1);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (1, null, '2026-04-03 13:30:04.542431',
-                                                                            'livgo', '2026-04-04 20:48:12.466492',
-                                                                            '$manager', 'fa fa-cogs', '系统管理', null,
-                                                                            1, 2, null, null, null);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (2, null, '2026-04-03 13:30:04.566067',
-                                                                            'livgo', '2026-04-04 21:50:44.669175',
-                                                                            '$home', 'fa fa-home', '首页', null, 0, 1,
-                                                                            'router', '/', null);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (3, null, '2026-04-03 13:30:04.568060',
-                                                                            'erupt', '2026-04-04 02:37:34.477672',
-                                                                            'EruptMenu', null, '菜单管理', null, 0, 2,
-                                                                            'tree', 'EruptMenu', 1);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (4, null, '2026-04-03 13:30:04.571062', null,
-                                                                            '2026-04-03 13:30:04.571062',
-                                                                            'EruptMenu@ADD', null, 'ADD', null, 10, 1,
-                                                                            'button', 'EruptMenu@ADD', 3);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (5, null, '2026-04-03 13:30:04.572071', null,
-                                                                            '2026-04-03 13:30:04.572071',
-                                                                            'EruptMenu@EDIT', null, 'EDIT', null, 20, 1,
-                                                                            'button', 'EruptMenu@EDIT', 3);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (6, null, '2026-04-03 13:30:04.573060', null,
-                                                                            '2026-04-03 13:30:04.573060',
-                                                                            'EruptMenu@DELETE', null, 'DELETE', null,
-                                                                            30, 1, 'button', 'EruptMenu@DELETE', 3);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (7, null, '2026-04-03 13:30:04.575060', null,
-                                                                            '2026-04-03 13:30:04.575060',
-                                                                            'EruptMenu@VIEW_DETAIL', null, 'DETAIL',
-                                                                            null, 40, 1, 'button',
-                                                                            'EruptMenu@VIEW_DETAIL', 3);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (8, null, '2026-04-03 13:30:04.576061',
-                                                                            'livgo', '2026-04-05 00:14:03.211523',
-                                                                            'EruptRole', null, '角色管理', null, 10, 1,
-                                                                            'table', 'EruptRole', null);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (9, null, '2026-04-03 13:30:04.578061', null,
-                                                                            '2026-04-03 13:30:04.578061',
-                                                                            'EruptRole@ADD', null, 'ADD', null, 10, 1,
-                                                                            'button', 'EruptRole@ADD', 8);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (10, null, '2026-04-03 13:30:04.579060',
-                                                                            null, '2026-04-03 13:30:04.579060',
-                                                                            'EruptRole@EDIT', null, 'EDIT', null, 20, 1,
-                                                                            'button', 'EruptRole@EDIT', 8);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (11, null, '2026-04-03 13:30:04.581060',
-                                                                            null, '2026-04-03 13:30:04.581060',
-                                                                            'EruptRole@DELETE', null, 'DELETE', null,
-                                                                            30, 1, 'button', 'EruptRole@DELETE', 8);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (12, null, '2026-04-03 13:30:04.583061',
-                                                                            null, '2026-04-03 13:30:04.583061',
-                                                                            'EruptRole@VIEW_DETAIL', null, 'DETAIL',
-                                                                            null, 40, 1, 'button',
-                                                                            'EruptRole@VIEW_DETAIL', 8);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (13, null, '2026-04-03 13:30:04.584062',
-                                                                            'erupt', '2026-04-04 02:38:25.373815',
-                                                                            'EruptOrg', null, '组织管理', null, 20, 2,
-                                                                            'tree', 'EruptOrg', 1);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (14, null, '2026-04-03 13:30:04.585061',
-                                                                            null, '2026-04-03 13:30:04.585061',
-                                                                            'EruptOrg@ADD', null, 'ADD', null, 10, 1,
-                                                                            'button', 'EruptOrg@ADD', 13);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (15, null, '2026-04-03 13:30:04.587060',
-                                                                            null, '2026-04-03 13:30:04.587060',
-                                                                            'EruptOrg@EDIT', null, 'EDIT', null, 20, 1,
-                                                                            'button', 'EruptOrg@EDIT', 13);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (16, null, '2026-04-03 13:30:04.588060',
-                                                                            null, '2026-04-03 13:30:04.588060',
-                                                                            'EruptOrg@DELETE', null, 'DELETE', null, 30,
-                                                                            1, 'button', 'EruptOrg@DELETE', 13);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (17, null, '2026-04-03 13:30:04.590060',
-                                                                            null, '2026-04-03 13:30:04.590060',
-                                                                            'EruptOrg@VIEW_DETAIL', null, 'DETAIL',
-                                                                            null, 40, 1, 'button',
-                                                                            'EruptOrg@VIEW_DETAIL', 13);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (18, null, '2026-04-03 13:30:04.591061',
-                                                                            'erupt', '2026-04-04 02:38:33.024113',
-                                                                            'EruptPost', null, '岗位管理', null, 30, 2,
-                                                                            'tree', 'EruptPost', 1);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (19, null, '2026-04-03 13:30:04.592060',
-                                                                            null, '2026-04-03 13:30:04.592060',
-                                                                            'EruptPost@ADD', null, 'ADD', null, 10, 1,
-                                                                            'button', 'EruptPost@ADD', 18);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (20, null, '2026-04-03 13:30:04.594061',
-                                                                            null, '2026-04-03 13:30:04.594061',
-                                                                            'EruptPost@EDIT', null, 'EDIT', null, 20, 1,
-                                                                            'button', 'EruptPost@EDIT', 18);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (21, null, '2026-04-03 13:30:04.595060',
-                                                                            null, '2026-04-03 13:30:04.595060',
-                                                                            'EruptPost@DELETE', null, 'DELETE', null,
-                                                                            30, 1, 'button', 'EruptPost@DELETE', 18);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (22, null, '2026-04-03 13:30:04.596060',
-                                                                            null, '2026-04-03 13:30:04.596060',
-                                                                            'EruptPost@VIEW_DETAIL', null, 'DETAIL',
-                                                                            null, 40, 1, 'button',
-                                                                            'EruptPost@VIEW_DETAIL', 18);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (23, null, '2026-04-03 13:30:04.597060',
-                                                                            'erupt', '2026-04-04 02:38:43.244814',
-                                                                            'EruptUser', null, '用户管理', null, 40, 1,
-                                                                            'table', 'EruptUser', null);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (24, null, '2026-04-03 13:30:04.597060',
-                                                                            null, '2026-04-03 13:30:04.597060',
-                                                                            'EruptUser@ADD', null, 'ADD', null, 10, 1,
-                                                                            'button', 'EruptUser@ADD', 23);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (25, null, '2026-04-03 13:30:04.598061',
-                                                                            null, '2026-04-03 13:30:04.598061',
-                                                                            'EruptUser@EDIT', null, 'EDIT', null, 20, 1,
-                                                                            'button', 'EruptUser@EDIT', 23);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (26, null, '2026-04-03 13:30:04.600060',
-                                                                            null, '2026-04-03 13:30:04.600060',
-                                                                            'EruptUser@DELETE', null, 'DELETE', null,
-                                                                            30, 1, 'button', 'EruptUser@DELETE', 23);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (27, null, '2026-04-03 13:30:04.600060',
-                                                                            null, '2026-04-03 13:30:04.600060',
-                                                                            'EruptUser@VIEW_DETAIL', null, 'DETAIL',
-                                                                            null, 40, 1, 'button',
-                                                                            'EruptUser@VIEW_DETAIL', 23);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (28, null, '2026-04-03 13:30:04.601061',
-                                                                            'livgo', '2026-04-04 12:00:38.399531',
-                                                                            'EruptDict', null, '数据字典', null, 50, 1,
-                                                                            'table', 'EruptDict', 1);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (29, null, '2026-04-03 13:30:04.602060',
-                                                                            null, '2026-04-03 13:30:04.602060',
-                                                                            'EruptDict@ADD', null, 'ADD', null, 10, 1,
-                                                                            'button', 'EruptDict@ADD', 28);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (30, null, '2026-04-03 13:30:04.603060',
-                                                                            null, '2026-04-03 13:30:04.603060',
-                                                                            'EruptDict@EDIT', null, 'EDIT', null, 20, 1,
-                                                                            'button', 'EruptDict@EDIT', 28);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (31, null, '2026-04-03 13:30:04.605062',
-                                                                            null, '2026-04-03 13:30:04.605062',
-                                                                            'EruptDict@DELETE', null, 'DELETE', null,
-                                                                            30, 1, 'button', 'EruptDict@DELETE', 28);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (32, null, '2026-04-03 13:30:04.605062',
-                                                                            null, '2026-04-03 13:30:04.605062',
-                                                                            'EruptDict@EXPORT', null, 'EXPORT', null,
-                                                                            40, 1, 'button', 'EruptDict@EXPORT', 28);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (33, null, '2026-04-03 13:30:04.607245',
-                                                                            null, '2026-04-03 13:30:04.607245',
-                                                                            'EruptDict@VIEW_DETAIL', null, 'DETAIL',
-                                                                            null, 50, 1, 'button',
-                                                                            'EruptDict@VIEW_DETAIL', 28);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (34, null, '2026-04-03 13:30:04.608245',
-                                                                            null, '2026-04-03 13:30:04.608245',
-                                                                            'EruptDictItem', '', '字典项', null, 60, 2,
-                                                                            'table', 'EruptDictItem', 1);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (35, null, '2026-04-03 13:30:04.609245',
-                                                                            null, '2026-04-03 13:30:04.609245',
-                                                                            'EruptDictItem@ADD', null, 'ADD', null, 10,
-                                                                            1, 'button', 'EruptDictItem@ADD', 34);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (36, null, '2026-04-03 13:30:04.610246',
-                                                                            null, '2026-04-03 13:30:04.610246',
-                                                                            'EruptDictItem@EDIT', null, 'EDIT', null,
-                                                                            20, 1, 'button', 'EruptDictItem@EDIT', 34);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (37, null, '2026-04-03 13:30:04.611245',
-                                                                            null, '2026-04-03 13:30:04.611245',
-                                                                            'EruptDictItem@DELETE', null, 'DELETE',
-                                                                            null, 30, 1, 'button',
-                                                                            'EruptDictItem@DELETE', 34);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (38, null, '2026-04-03 13:30:04.612245',
-                                                                            null, '2026-04-03 13:30:04.612245',
-                                                                            'EruptDictItem@EXPORT', null, 'EXPORT',
-                                                                            null, 40, 1, 'button',
-                                                                            'EruptDictItem@EXPORT', 34);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (39, null, '2026-04-03 13:30:04.613245',
-                                                                            null, '2026-04-03 13:30:04.613245',
-                                                                            'EruptDictItem@IMPORTABLE', null, 'IMPORT',
-                                                                            null, 50, 1, 'button',
-                                                                            'EruptDictItem@IMPORTABLE', 34);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (40, null, '2026-04-03 13:30:04.614245',
-                                                                            null, '2026-04-03 13:30:04.614245',
-                                                                            'EruptDictItem@VIEW_DETAIL', null, 'DETAIL',
-                                                                            null, 60, 1, 'button',
-                                                                            'EruptDictItem@VIEW_DETAIL', 34);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (41, null, '2026-04-03 13:30:04.615255',
-                                                                            'erupt', '2026-04-04 02:39:21.022827',
-                                                                            'EruptOpenApi', null, 'Open API', null, 60,
-                                                                            2, 'table', 'EruptOpenApi', 1);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (42, null, '2026-04-03 13:30:04.616245',
-                                                                            null, '2026-04-03 13:30:04.616245',
-                                                                            'EruptOpenApi@ADD', null, 'ADD', null, 10,
-                                                                            1, 'button', 'EruptOpenApi@ADD', 41);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (43, null, '2026-04-03 13:30:04.617245',
-                                                                            null, '2026-04-03 13:30:04.617245',
-                                                                            'EruptOpenApi@EDIT', null, 'EDIT', null, 20,
-                                                                            1, 'button', 'EruptOpenApi@EDIT', 41);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (44, null, '2026-04-03 13:30:04.618395',
-                                                                            null, '2026-04-03 13:30:04.618395',
-                                                                            'EruptOpenApi@DELETE', null, 'DELETE', null,
-                                                                            30, 1, 'button', 'EruptOpenApi@DELETE', 41);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (45, null, '2026-04-03 13:30:04.619400',
-                                                                            null, '2026-04-03 13:30:04.619400',
-                                                                            'EruptOpenApi@VIEW_DETAIL', null, 'DETAIL',
-                                                                            null, 40, 1, 'button',
-                                                                            'EruptOpenApi@VIEW_DETAIL', 41);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (46, null, '2026-04-03 13:30:04.620399',
-                                                                            'erupt', '2026-04-04 02:39:50.149720',
-                                                                            'EruptOnline', null, '在线用户', null, 65,
-                                                                            1, 'table', 'EruptOnline', null);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (47, null, '2026-04-03 13:30:04.621400',
-                                                                            null, '2026-04-03 13:30:04.621400',
-                                                                            'EruptOnline@EXPORT', null, 'EXPORT', null,
-                                                                            10, 1, 'button', 'EruptOnline@EXPORT', 46);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (48, null, '2026-04-03 13:30:04.622400',
-                                                                            'erupt', '2026-04-04 02:39:38.491331',
-                                                                            'EruptLoginLog', null, '登录日志', null, 70,
-                                                                            1, 'table', 'EruptLoginLog', null);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (49, null, '2026-04-03 13:30:04.623399',
-                                                                            null, '2026-04-03 13:30:04.623399',
-                                                                            'EruptLoginLog@EXPORT', null, 'EXPORT',
-                                                                            null, 10, 1, 'button',
-                                                                            'EruptLoginLog@EXPORT', 48);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (50, null, '2026-04-03 13:30:04.624400',
-                                                                            'erupt', '2026-04-04 02:41:42.903818',
-                                                                            'EruptOperateLog', null, '操作日志', null,
-                                                                            80, 1, 'table', 'EruptOperateLog', null);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (51, null, '2026-04-03 13:30:04.625400',
-                                                                            'erupt', '2026-04-04 02:41:46.198391',
-                                                                            'erupt-log', null, '系统日志', null, 90, 1,
-                                                                            'tpl', 'erupt-log', null);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (52, 'erupt', '2026-04-03 13:35:25.591016',
-                                                                            'erupt', '2026-04-04 02:43:32.738696',
-                                                                            'g3Pok1CJ', null, '权限管理', null, 2, 1,
-                                                                            'table', 'Permission', null);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (53, 'erupt', '2026-04-03 13:35:25.593018',
-                                                                            'erupt', '2026-04-03 13:35:25.593018',
-                                                                            'LfVgotwC', null, 'ADD', null, 10, 1,
-                                                                            'button', 'Permission@ADD', 52);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (54, 'erupt', '2026-04-03 13:35:25.593018',
-                                                                            'erupt', '2026-04-03 13:35:25.593018',
-                                                                            '5O3P3k1x', null, 'EDIT', null, 20, 1,
-                                                                            'button', 'Permission@EDIT', 52);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (55, 'erupt', '2026-04-03 13:35:25.594016',
-                                                                            'erupt', '2026-04-03 13:35:25.594016',
-                                                                            'xzChda56', null, 'DELETE', null, 30, 1,
-                                                                            'button', 'Permission@DELETE', 52);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (56, 'erupt', '2026-04-03 13:35:25.594016',
-                                                                            'erupt', '2026-04-03 13:35:25.594016',
-                                                                            'luxdalSX', null, 'EXPORT', null, 40, 1,
-                                                                            'button', 'Permission@EXPORT', 52);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (57, 'erupt', '2026-04-03 13:35:25.595016',
-                                                                            'erupt', '2026-04-03 13:35:25.595016',
-                                                                            'BjcHGih8', null, 'DETAIL', null, 50, 1,
-                                                                            'button', 'Permission@VIEW_DETAIL', 52);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (58, 'erupt', '2026-04-03 13:35:52.094970',
-                                                                            'erupt', '2026-04-04 02:43:24.461637',
-                                                                            '0spII4nN', null, '文件详情', null, 1, 1,
-                                                                            'table', 'FileDetail', null);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (60, 'erupt', '2026-04-03 13:35:52.095971',
-                                                                            'erupt', '2026-04-03 13:35:52.095971',
-                                                                            '434nxUJ8', null, 'EDIT', null, 20, 1,
-                                                                            'button', 'FileDetail@EDIT', 58);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (61, 'erupt', '2026-04-03 13:35:52.095971',
-                                                                            'erupt', '2026-04-03 13:35:52.095971',
-                                                                            'vb0z3Z7c', null, 'DELETE', null, 30, 1,
-                                                                            'button', 'FileDetail@DELETE', 58);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (62, 'erupt', '2026-04-03 13:35:52.095971',
-                                                                            'erupt', '2026-04-03 13:35:52.095971',
-                                                                            'AU5Kp1Qn', null, 'EXPORT', null, 40, 1,
-                                                                            'button', 'FileDetail@EXPORT', 58);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (63, 'erupt', '2026-04-03 13:35:52.095971',
-                                                                            'erupt', '2026-04-03 13:35:52.095971',
-                                                                            'IkvLmV9V', null, 'DETAIL', null, 50, 1,
-                                                                            'button', 'FileDetail@VIEW_DETAIL', 58);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (69, 'erupt', '2026-04-04 00:44:14.961491',
-                                                                            'erupt', '2026-04-04 02:43:37.275296',
-                                                                            '75PiKf60', null, '公告详情', null, 3, 1,
-                                                                            'table', 'NoticeDetail', null);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (70, 'erupt', '2026-04-04 00:44:14.963492',
-                                                                            'erupt', '2026-04-04 00:44:14.963492',
-                                                                            'sJVLMEeR', null, 'ADD', null, 10, 1,
-                                                                            'button', 'NoticeDetail@ADD', 69);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (71, 'erupt', '2026-04-04 00:44:14.964493',
-                                                                            'erupt', '2026-04-04 00:44:14.964493',
-                                                                            'zNtHfOeR', null, 'EDIT', null, 20, 1,
-                                                                            'button', 'NoticeDetail@EDIT', 69);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (72, 'erupt', '2026-04-04 00:44:14.965492',
-                                                                            'erupt', '2026-04-04 00:44:14.965492',
-                                                                            'BnmoyZUD', null, 'DELETE', null, 30, 1,
-                                                                            'button', 'NoticeDetail@DELETE', 69);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (73, 'erupt', '2026-04-04 00:44:14.965492',
-                                                                            'erupt', '2026-04-04 00:44:14.965492',
-                                                                            'm3EKdMko', null, 'EXPORT', null, 40, 1,
-                                                                            'button', 'NoticeDetail@EXPORT', 69);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (74, 'erupt', '2026-04-04 00:44:14.966492',
-                                                                            'erupt', '2026-04-04 00:44:14.966492',
-                                                                            'brtRhRfC', null, 'DETAIL', null, 50, 1,
-                                                                            'button', 'NoticeDetail@VIEW_DETAIL', 69);
-MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT,
-                               STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (75, 'livgo', '2026-04-04 13:38:21.629221',
-                                                                            'livgo', '2026-04-04 13:38:51.868583',
-                                                                            'weuBeQPQ', null, 'ADD', null, 100, 1,
-                                                                            'button', 'FileDetail@ADD', 58);
+
+comment on table E_UPMS_MENU is '菜单管理';
+
+comment on column E_UPMS_MENU.CREATE_BY is '创建人';
+
+comment on column E_UPMS_MENU.CREATE_TIME is '创建时间';
+
+comment on column E_UPMS_MENU.UPDATE_BY is '更新人';
+
+comment on column E_UPMS_MENU.UPDATE_TIME is '更新时间';
+
+comment on column E_UPMS_MENU.CODE is '编码';
+
+comment on column E_UPMS_MENU.ICON is '图标';
+
+comment on column E_UPMS_MENU.NAME is '名称';
+
+comment on column E_UPMS_MENU.PARAM is '自定义参数';
+
+comment on column E_UPMS_MENU.SORT is '顺序';
+
+comment on column E_UPMS_MENU.STATUS is '状态';
+
+comment on column E_UPMS_MENU.TYPE is '菜单类型';
+
+comment on column E_UPMS_MENU.VALUE is '类型值';
+
+comment on column E_UPMS_MENU.PARENT_MENU_ID is '上级菜单';
+
+MERGE INTO PUBLIC.E_DICT (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, NAME, REMARK) VALUES (1, 'erupt', '2026-04-03 13:31:28.819832', 'erupt', '2026-04-03 13:31:28.819832', 'permission', '权限等级', null);
+MERGE INTO PUBLIC.E_DICT_ITEM (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, NAME, REMARK, SORT, VAL, ERUPT_DICT_ID) VALUES (1, 'erupt', '2026-04-03 13:31:47.919620', 'livgo', '2026-04-04 12:01:34.395759', 'admin', '超管', '最高权限，在“全部同步”功能中使用', 0, '0', 1);
+MERGE INTO PUBLIC.E_DICT_ITEM (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, NAME, REMARK, SORT, VAL, ERUPT_DICT_ID) VALUES (2, 'erupt', '2026-04-03 13:32:11.731101', 'livgo', '2026-04-04 12:02:13.250829', 'gwhite', '白名单群', '配置允许哪个群聊使用功能', 1, '1', 1);
+MERGE INTO PUBLIC.E_DICT_ITEM (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, NAME, REMARK, SORT, VAL, ERUPT_DICT_ID) VALUES (3, 'erupt', '2026-04-03 13:32:26.732952', 'livgo', '2026-04-04 12:02:59.847046', 'guser', '白名单用户', '允许哪些用户使用“删除”功能', 2, '2', 1);
+MERGE INTO PUBLIC.E_DICT_ITEM (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, NAME, REMARK, SORT, VAL, ERUPT_DICT_ID) VALUES (4, 'erupt', '2026-04-03 13:32:54.813192', 'livgo', '2026-04-04 19:10:55.205763', 'gauto', '自动上传', '监听群内文件上传并自动存入系统', 3, '3', 1);
+MERGE INTO PUBLIC.E_DICT_ITEM (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, NAME, REMARK, SORT, VAL, ERUPT_DICT_ID) VALUES (5, 'erupt', '2026-04-03 13:34:04.293930', 'livgo', '2026-04-04 12:03:39.807128', 'buser', '黑名单用户', '禁用机器人的用户', 4, '4', 1);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (1, null, '2026-04-03 13:30:04.542431', 'livgo', '2026-04-04 20:48:12.466492', '$manager', 'fa fa-cogs', '系统管理', null, 1, 2, null, null, null);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (2, null, '2026-04-03 13:30:04.566067', 'livgo', '2026-04-04 21:50:44.669175', '$home', 'fa fa-home', '首页', null, 0, 1, 'router', '/', null);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (3, null, '2026-04-03 13:30:04.568060', 'erupt', '2026-04-04 02:37:34.477672', 'EruptMenu', null, '菜单管理', null, 0, 2, 'tree', 'EruptMenu', 1);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (4, null, '2026-04-03 13:30:04.571062', null, '2026-04-03 13:30:04.571062', 'EruptMenu@ADD', null, 'ADD', null, 10, 1, 'button', 'EruptMenu@ADD', 3);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (5, null, '2026-04-03 13:30:04.572071', null, '2026-04-03 13:30:04.572071', 'EruptMenu@EDIT', null, 'EDIT', null, 20, 1, 'button', 'EruptMenu@EDIT', 3);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (6, null, '2026-04-03 13:30:04.573060', null, '2026-04-03 13:30:04.573060', 'EruptMenu@DELETE', null, 'DELETE', null, 30, 1, 'button', 'EruptMenu@DELETE', 3);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (7, null, '2026-04-03 13:30:04.575060', null, '2026-04-03 13:30:04.575060', 'EruptMenu@VIEW_DETAIL', null, 'DETAIL', null, 40, 1, 'button', 'EruptMenu@VIEW_DETAIL', 3);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (8, null, '2026-04-03 13:30:04.576061', 'livgo', '2026-04-05 00:14:03.211523', 'EruptRole', null, '角色管理', null, 10, 1, 'table', 'EruptRole', null);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (9, null, '2026-04-03 13:30:04.578061', null, '2026-04-03 13:30:04.578061', 'EruptRole@ADD', null, 'ADD', null, 10, 1, 'button', 'EruptRole@ADD', 8);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (10, null, '2026-04-03 13:30:04.579060', null, '2026-04-03 13:30:04.579060', 'EruptRole@EDIT', null, 'EDIT', null, 20, 1, 'button', 'EruptRole@EDIT', 8);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (11, null, '2026-04-03 13:30:04.581060', null, '2026-04-03 13:30:04.581060', 'EruptRole@DELETE', null, 'DELETE', null, 30, 1, 'button', 'EruptRole@DELETE', 8);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (12, null, '2026-04-03 13:30:04.583061', null, '2026-04-03 13:30:04.583061', 'EruptRole@VIEW_DETAIL', null, 'DETAIL', null, 40, 1, 'button', 'EruptRole@VIEW_DETAIL', 8);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (13, null, '2026-04-03 13:30:04.584062', 'erupt', '2026-04-04 02:38:25.373815', 'EruptOrg', null, '组织管理', null, 20, 2, 'tree', 'EruptOrg', 1);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (14, null, '2026-04-03 13:30:04.585061', null, '2026-04-03 13:30:04.585061', 'EruptOrg@ADD', null, 'ADD', null, 10, 1, 'button', 'EruptOrg@ADD', 13);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (15, null, '2026-04-03 13:30:04.587060', null, '2026-04-03 13:30:04.587060', 'EruptOrg@EDIT', null, 'EDIT', null, 20, 1, 'button', 'EruptOrg@EDIT', 13);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (16, null, '2026-04-03 13:30:04.588060', null, '2026-04-03 13:30:04.588060', 'EruptOrg@DELETE', null, 'DELETE', null, 30, 1, 'button', 'EruptOrg@DELETE', 13);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (17, null, '2026-04-03 13:30:04.590060', null, '2026-04-03 13:30:04.590060', 'EruptOrg@VIEW_DETAIL', null, 'DETAIL', null, 40, 1, 'button', 'EruptOrg@VIEW_DETAIL', 13);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (18, null, '2026-04-03 13:30:04.591061', 'erupt', '2026-04-04 02:38:33.024113', 'EruptPost', null, '岗位管理', null, 30, 2, 'tree', 'EruptPost', 1);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (19, null, '2026-04-03 13:30:04.592060', null, '2026-04-03 13:30:04.592060', 'EruptPost@ADD', null, 'ADD', null, 10, 1, 'button', 'EruptPost@ADD', 18);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (20, null, '2026-04-03 13:30:04.594061', null, '2026-04-03 13:30:04.594061', 'EruptPost@EDIT', null, 'EDIT', null, 20, 1, 'button', 'EruptPost@EDIT', 18);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (21, null, '2026-04-03 13:30:04.595060', null, '2026-04-03 13:30:04.595060', 'EruptPost@DELETE', null, 'DELETE', null, 30, 1, 'button', 'EruptPost@DELETE', 18);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (22, null, '2026-04-03 13:30:04.596060', null, '2026-04-03 13:30:04.596060', 'EruptPost@VIEW_DETAIL', null, 'DETAIL', null, 40, 1, 'button', 'EruptPost@VIEW_DETAIL', 18);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (23, null, '2026-04-03 13:30:04.597060', 'erupt', '2026-04-04 02:38:43.244814', 'EruptUser', null, '用户管理', null, 40, 1, 'table', 'EruptUser', null);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (24, null, '2026-04-03 13:30:04.597060', null, '2026-04-03 13:30:04.597060', 'EruptUser@ADD', null, 'ADD', null, 10, 1, 'button', 'EruptUser@ADD', 23);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (25, null, '2026-04-03 13:30:04.598061', null, '2026-04-03 13:30:04.598061', 'EruptUser@EDIT', null, 'EDIT', null, 20, 1, 'button', 'EruptUser@EDIT', 23);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (26, null, '2026-04-03 13:30:04.600060', null, '2026-04-03 13:30:04.600060', 'EruptUser@DELETE', null, 'DELETE', null, 30, 1, 'button', 'EruptUser@DELETE', 23);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (27, null, '2026-04-03 13:30:04.600060', null, '2026-04-03 13:30:04.600060', 'EruptUser@VIEW_DETAIL', null, 'DETAIL', null, 40, 1, 'button', 'EruptUser@VIEW_DETAIL', 23);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (28, null, '2026-04-03 13:30:04.601061', 'livgo', '2026-04-04 12:00:38.399531', 'EruptDict', null, '数据字典', null, 50, 1, 'table', 'EruptDict', 1);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (29, null, '2026-04-03 13:30:04.602060', null, '2026-04-03 13:30:04.602060', 'EruptDict@ADD', null, 'ADD', null, 10, 1, 'button', 'EruptDict@ADD', 28);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (30, null, '2026-04-03 13:30:04.603060', null, '2026-04-03 13:30:04.603060', 'EruptDict@EDIT', null, 'EDIT', null, 20, 1, 'button', 'EruptDict@EDIT', 28);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (31, null, '2026-04-03 13:30:04.605062', null, '2026-04-03 13:30:04.605062', 'EruptDict@DELETE', null, 'DELETE', null, 30, 1, 'button', 'EruptDict@DELETE', 28);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (32, null, '2026-04-03 13:30:04.605062', null, '2026-04-03 13:30:04.605062', 'EruptDict@EXPORT', null, 'EXPORT', null, 40, 1, 'button', 'EruptDict@EXPORT', 28);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (33, null, '2026-04-03 13:30:04.607245', null, '2026-04-03 13:30:04.607245', 'EruptDict@VIEW_DETAIL', null, 'DETAIL', null, 50, 1, 'button', 'EruptDict@VIEW_DETAIL', 28);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (34, null, '2026-04-03 13:30:04.608245', null, '2026-04-03 13:30:04.608245', 'EruptDictItem', '', '字典项', null, 60, 2, 'table', 'EruptDictItem', 1);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (35, null, '2026-04-03 13:30:04.609245', null, '2026-04-03 13:30:04.609245', 'EruptDictItem@ADD', null, 'ADD', null, 10, 1, 'button', 'EruptDictItem@ADD', 34);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (36, null, '2026-04-03 13:30:04.610246', null, '2026-04-03 13:30:04.610246', 'EruptDictItem@EDIT', null, 'EDIT', null, 20, 1, 'button', 'EruptDictItem@EDIT', 34);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (37, null, '2026-04-03 13:30:04.611245', null, '2026-04-03 13:30:04.611245', 'EruptDictItem@DELETE', null, 'DELETE', null, 30, 1, 'button', 'EruptDictItem@DELETE', 34);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (38, null, '2026-04-03 13:30:04.612245', null, '2026-04-03 13:30:04.612245', 'EruptDictItem@EXPORT', null, 'EXPORT', null, 40, 1, 'button', 'EruptDictItem@EXPORT', 34);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (39, null, '2026-04-03 13:30:04.613245', null, '2026-04-03 13:30:04.613245', 'EruptDictItem@IMPORTABLE', null, 'IMPORT', null, 50, 1, 'button', 'EruptDictItem@IMPORTABLE', 34);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (40, null, '2026-04-03 13:30:04.614245', null, '2026-04-03 13:30:04.614245', 'EruptDictItem@VIEW_DETAIL', null, 'DETAIL', null, 60, 1, 'button', 'EruptDictItem@VIEW_DETAIL', 34);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (41, null, '2026-04-03 13:30:04.615255', 'erupt', '2026-04-04 02:39:21.022827', 'EruptOpenApi', null, 'Open API', null, 60, 2, 'table', 'EruptOpenApi', 1);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (42, null, '2026-04-03 13:30:04.616245', null, '2026-04-03 13:30:04.616245', 'EruptOpenApi@ADD', null, 'ADD', null, 10, 1, 'button', 'EruptOpenApi@ADD', 41);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (43, null, '2026-04-03 13:30:04.617245', null, '2026-04-03 13:30:04.617245', 'EruptOpenApi@EDIT', null, 'EDIT', null, 20, 1, 'button', 'EruptOpenApi@EDIT', 41);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (44, null, '2026-04-03 13:30:04.618395', null, '2026-04-03 13:30:04.618395', 'EruptOpenApi@DELETE', null, 'DELETE', null, 30, 1, 'button', 'EruptOpenApi@DELETE', 41);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (45, null, '2026-04-03 13:30:04.619400', null, '2026-04-03 13:30:04.619400', 'EruptOpenApi@VIEW_DETAIL', null, 'DETAIL', null, 40, 1, 'button', 'EruptOpenApi@VIEW_DETAIL', 41);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (46, null, '2026-04-03 13:30:04.620399', 'erupt', '2026-04-04 02:39:50.149720', 'EruptOnline', null, '在线用户', null, 65, 1, 'table', 'EruptOnline', null);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (47, null, '2026-04-03 13:30:04.621400', null, '2026-04-03 13:30:04.621400', 'EruptOnline@EXPORT', null, 'EXPORT', null, 10, 1, 'button', 'EruptOnline@EXPORT', 46);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (48, null, '2026-04-03 13:30:04.622400', 'erupt', '2026-04-04 02:39:38.491331', 'EruptLoginLog', null, '登录日志', null, 70, 1, 'table', 'EruptLoginLog', null);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (49, null, '2026-04-03 13:30:04.623399', null, '2026-04-03 13:30:04.623399', 'EruptLoginLog@EXPORT', null, 'EXPORT', null, 10, 1, 'button', 'EruptLoginLog@EXPORT', 48);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (50, null, '2026-04-03 13:30:04.624400', 'erupt', '2026-04-04 02:41:42.903818', 'EruptOperateLog', null, '操作日志', null, 80, 1, 'table', 'EruptOperateLog', null);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (51, null, '2026-04-03 13:30:04.625400', 'erupt', '2026-04-04 02:41:46.198391', 'erupt-log', null, '系统日志', null, 90, 1, 'tpl', 'erupt-log', null);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (52, 'erupt', '2026-04-03 13:35:25.591016', 'livgo', '2026-04-06 20:09:08.302041', 'g3Pok1CJ', null, '权限管理-t', null, 2, 2, 'table', 'Permission', null);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (53, 'erupt', '2026-04-03 13:35:25.593018', 'erupt', '2026-04-03 13:35:25.593018', 'LfVgotwC', null, 'ADD', null, 10, 1, 'button', 'Permission@ADD', 52);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (54, 'erupt', '2026-04-03 13:35:25.593018', 'erupt', '2026-04-03 13:35:25.593018', '5O3P3k1x', null, 'EDIT', null, 20, 1, 'button', 'Permission@EDIT', 52);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (55, 'erupt', '2026-04-03 13:35:25.594016', 'erupt', '2026-04-03 13:35:25.594016', 'xzChda56', null, 'DELETE', null, 30, 1, 'button', 'Permission@DELETE', 52);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (56, 'erupt', '2026-04-03 13:35:25.594016', 'erupt', '2026-04-03 13:35:25.594016', 'luxdalSX', null, 'EXPORT', null, 40, 1, 'button', 'Permission@EXPORT', 52);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (57, 'erupt', '2026-04-03 13:35:25.595016', 'erupt', '2026-04-03 13:35:25.595016', 'BjcHGih8', null, 'DETAIL', null, 50, 1, 'button', 'Permission@VIEW_DETAIL', 52);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (58, 'erupt', '2026-04-03 13:35:52.094970', 'erupt', '2026-04-04 02:43:24.461637', '0spII4nN', null, '文件详情', null, 1, 1, 'table', 'FileDetail', null);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (60, 'erupt', '2026-04-03 13:35:52.095971', 'erupt', '2026-04-03 13:35:52.095971', '434nxUJ8', null, 'EDIT', null, 20, 1, 'button', 'FileDetail@EDIT', 58);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (61, 'erupt', '2026-04-03 13:35:52.095971', 'erupt', '2026-04-03 13:35:52.095971', 'vb0z3Z7c', null, 'DELETE', null, 30, 1, 'button', 'FileDetail@DELETE', 58);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (62, 'erupt', '2026-04-03 13:35:52.095971', 'erupt', '2026-04-03 13:35:52.095971', 'AU5Kp1Qn', null, 'EXPORT', null, 40, 1, 'button', 'FileDetail@EXPORT', 58);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (63, 'erupt', '2026-04-03 13:35:52.095971', 'erupt', '2026-04-03 13:35:52.095971', 'IkvLmV9V', null, 'DETAIL', null, 50, 1, 'button', 'FileDetail@VIEW_DETAIL', 58);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (69, 'erupt', '2026-04-04 00:44:14.961491', 'erupt', '2026-04-04 02:43:37.275296', '75PiKf60', null, '公告详情', null, 3, 1, 'table', 'NoticeDetail', null);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (70, 'erupt', '2026-04-04 00:44:14.963492', 'erupt', '2026-04-04 00:44:14.963492', 'sJVLMEeR', null, 'ADD', null, 10, 1, 'button', 'NoticeDetail@ADD', 69);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (71, 'erupt', '2026-04-04 00:44:14.964493', 'erupt', '2026-04-04 00:44:14.964493', 'zNtHfOeR', null, 'EDIT', null, 20, 1, 'button', 'NoticeDetail@EDIT', 69);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (72, 'erupt', '2026-04-04 00:44:14.965492', 'erupt', '2026-04-04 00:44:14.965492', 'BnmoyZUD', null, 'DELETE', null, 30, 1, 'button', 'NoticeDetail@DELETE', 69);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (73, 'erupt', '2026-04-04 00:44:14.965492', 'erupt', '2026-04-04 00:44:14.965492', 'm3EKdMko', null, 'EXPORT', null, 40, 1, 'button', 'NoticeDetail@EXPORT', 69);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (74, 'erupt', '2026-04-04 00:44:14.966492', 'erupt', '2026-04-04 00:44:14.966492', 'brtRhRfC', null, 'DETAIL', null, 50, 1, 'button', 'NoticeDetail@VIEW_DETAIL', 69);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (75, 'livgo', '2026-04-04 13:38:21.629221', 'livgo', '2026-04-04 13:38:51.868583', 'weuBeQPQ', null, 'ADD', null, 100, 1, 'button', 'FileDetail@ADD', 58);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (82, 'livgo', '2026-04-06 15:29:31.089079', 'livgo', '2026-04-06 15:57:51.611288', 'va6dMyVV', null, '权限管理', null, 2, 1, 'table', 'PermissionBot', null);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (83, 'livgo', '2026-04-06 15:29:31.092083', 'livgo', '2026-04-06 15:29:31.092083', 'M8doaDiK', null, 'ADD', null, 10, 1, 'button', 'PermissionBot@ADD', 82);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (84, 'livgo', '2026-04-06 15:29:31.093680', 'livgo', '2026-04-06 15:29:31.093680', 'IgDMxIFS', null, 'EDIT', null, 20, 1, 'button', 'PermissionBot@EDIT', 82);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (85, 'livgo', '2026-04-06 15:29:31.094686', 'livgo', '2026-04-06 15:29:31.094686', 'DWfrphvL', null, 'DELETE', null, 30, 1, 'button', 'PermissionBot@DELETE', 82);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (86, 'livgo', '2026-04-06 15:29:31.095687', 'livgo', '2026-04-06 15:29:31.095687', '2FTrYnOf', null, 'EXPORT', null, 40, 1, 'button', 'PermissionBot@EXPORT', 82);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (87, 'livgo', '2026-04-06 15:29:31.096690', 'livgo', '2026-04-06 15:29:31.096690', 'jCllVm5Y', null, 'DETAIL', null, 50, 1, 'button', 'PermissionBot@VIEW_DETAIL', 82);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (88, 'livgo', '2026-04-06 18:28:32.234355', 'livgo', '2026-04-06 18:28:32.234355', 'o3ZBMybB', null, '权限管理', null, 2, 1, 'table', 'PermissionBot', null);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (89, 'livgo', '2026-04-06 18:28:32.235357', 'livgo', '2026-04-06 18:28:32.235357', 'XFH9nlYF', null, 'ADD', null, 10, 1, 'button', 'PermissionBot@ADD', 88);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (90, 'livgo', '2026-04-06 18:28:32.236357', 'livgo', '2026-04-06 18:28:32.236357', 'Cc1CXHjW', null, 'EDIT', null, 20, 1, 'button', 'PermissionBot@EDIT', 88);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (91, 'livgo', '2026-04-06 18:28:32.237359', 'livgo', '2026-04-06 18:28:32.237359', 'uokDgtX3', null, 'DELETE', null, 30, 1, 'button', 'PermissionBot@DELETE', 88);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (92, 'livgo', '2026-04-06 18:28:32.237359', 'livgo', '2026-04-06 18:28:32.237359', '6PknQvuk', null, 'EXPORT', null, 40, 1, 'button', 'PermissionBot@EXPORT', 88);
+MERGE INTO PUBLIC.E_UPMS_MENU (ID, CREATE_BY, CREATE_TIME, UPDATE_BY, UPDATE_TIME, CODE, ICON, NAME, PARAM, SORT, STATUS, TYPE, VALUE, PARENT_MENU_ID) VALUES (93, 'livgo', '2026-04-06 18:28:32.238358', 'livgo', '2026-04-06 18:28:32.238358', 'OZkVy3s8', null, 'DETAIL', null, 50, 1, 'button', 'PermissionBot@VIEW_DETAIL', 88);

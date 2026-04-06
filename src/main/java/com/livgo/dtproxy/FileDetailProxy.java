@@ -29,7 +29,7 @@ public class FileDetailProxy implements DataProxy<FileDetail> {
     @Value("${run.upload-path}")
     private String UPLOAD;
 
-    private static String rootPath = getJarPath();
+    private static final String rootPath = getJarPath();
 
     @Override
     public void beforeAdd(FileDetail fileDetail) {

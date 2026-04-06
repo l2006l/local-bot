@@ -5,14 +5,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class PermissionConstant {
 
-    public static final Integer ADMIN = 1;
+    public static final Long ADMIN = 1L;
 
-    public static final Integer GROUP_WHITE_LIST = 2;
+    public static final Long GROUP_WHITE_LIST = 2L;
 
-    public static final Integer USER_WHITE_LIST = 3;
+    public static final Long USER_WHITE_LIST = 3L;
 
-    public static final Integer AUTO_UPDATE_GROUP = 4;
+    public static final Long AUTO_UPDATE_GROUP = 4L;
 
-    public static final Integer USER_BLACK_LIST = 5;
+    public static final Long USER_BLACK_LIST = 5L;
 
 }
