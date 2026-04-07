@@ -1,12 +1,28 @@
 spring:
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:file:./data/db;MODE=MYSQL;AUTO_SERVER=TRUE;
-    username: sa
-    password:
   application:
     name: local-bot
-
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:./data/db;AUTO_SERVER=TRUE;MODE=MySQL;NON_KEYWORDS=VALUE
+    username: sa
+    password:
+  jpa:
+    generate-ddl: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    database: h2
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+  sql:
+    init:
+      encoding: UTF-8
+      mode: always
+      data-locations: classpath:sql/init.sql
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 mybatis-plus:
   global-config:
     banner: false
@@ -15,30 +31,31 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: false
-auto-table:
-  enable: true
-  mode: update
-  show-banner: false
-  record-sql:
-    enable: true
-    record-type: file
-    folder-path: ./data/
-
-server:
-  port: 8080
+    lazy-loading-enabled: true
+erupt-app:
+  verify-code-count: 1
+  reset-pwd: true
+  water-mark: false
+erupt:
+  upload-path: ${run.upload-path:${user.dir}/upload}
+  hot-build: false
+  upms:
+    default-account: admin
+    default-password: admin
+    expire-time-by-login: 24
+  init-method-enum: none
 shiro:
   ws:
     server:
       url: /ws/shiro
       enable: true
 
+server:
+  tomcat:
+    max-http-form-post-size: -1
+    max-swallow-size: -1
+  port: 8080
 run:
-  mode: simple                # simple / standard   运行模式
-  location: your/work/dir     # 工作目录，即jar包所在路径
-  pwd: password               # 全部同步用到的的密码
-  admin: [ 123456,123345 ]      # 管理员qq号，部分场景下用到
-  groupList: [ 123345,123435 ]  # 白名单群号，即：启用功能的群聊，为空则默认全部群聊
-  autoGroup: 1234567          # 自动监听群聊，有文件自动上传
-  pageSize: 10                # 搜索结果分页大小
-
-
+  pageSize: 20
+  upload-path: ${user.dir}/upload
+  napcat-web: "http://127.0.0.1:6099"
