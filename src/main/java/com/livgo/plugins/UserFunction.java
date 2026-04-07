@@ -34,8 +34,6 @@ public class UserFunction {
     @Value("${run.pageSize:10}")
     private Integer pageSize;
 
-    private static final String LEVELS = "levels";
-
     private static final TimedCache<Long, Page<FileDetail>> CACHE = new TimedCache<>(1000 * 60 * 2);
 
     private static final TimedCache<Long, String> KEY_CACHE = new TimedCache<>(1000 * 60 * 2);
@@ -149,7 +147,7 @@ public class UserFunction {
 
     public void pageQuery(Bot bot, GroupMessageEvent event, String keyword, Long all, Page<FileDetail> pg) {
         LambdaQueryWrapper<FileDetail> query = new LambdaQueryWrapper<>();
-        query.like(FileDetail::getFileAliasName, keyword);
+        query.apply("LOWER(file_alias_name) LIKE LOWER(CONCAT('%',{0},'%'))", keyword);
         Page<FileDetail> fpl = fileDetailMapper.selectPage(pg, query);
 
         String resMsg = ResultMsgUtil.fileListMsg(fpl);
@@ -160,9 +158,6 @@ public class UserFunction {
                 fpl.getTotal(),
                 fpl.getPages(),
                 fpl.getCurrent());
-
-        CACHE.remove(event.getUserId());
-        CACHE.put(event.getUserId(), fpl);
         KEY_CACHE.remove(event.getUserId());
         KEY_CACHE.put(event.getUserId(), keyword);
 
