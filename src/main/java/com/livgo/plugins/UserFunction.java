@@ -160,6 +160,8 @@ public class UserFunction {
                 fpl.getCurrent());
         KEY_CACHE.remove(event.getUserId());
         KEY_CACHE.put(event.getUserId(), keyword);
+        CACHE.remove(event.getUserId());
+        CACHE.put(event.getUserId(), fpl);
 
         bot.sendGroupMsg(event.getGroupId(), resultMsg, false);
     }
